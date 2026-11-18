@@ -105,7 +105,7 @@ def list_events(category: str = "") -> list[dict[str, Any]]:
 def browse_catalog(
     category: str = "",
     page: int = Query(1, ge=1, description="The page to show, from 1."),
-    per_page: int = Query(10, ge=0, le=50, description="How many events a page holds."),
+    per_page: int = Query(10, ge=1, le=50, description="How many events a page holds."),
 ) -> dict[str, Any]:
     """The catalog the home page browses, a page at a time, newest events first."""
     events = [event for event in list_events(category)]
