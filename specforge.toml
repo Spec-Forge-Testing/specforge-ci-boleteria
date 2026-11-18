@@ -3,6 +3,7 @@
 name = "boleteria"
 openapi_spec = "openapi.json"
 base_url = "http://localhost:8600"
+identities_path = "identities.toml"
 
 # Options go under [engine], [llm], [inference], [replay] and [fix]. Ask the core what there is
 # rather than guessing: `get_config` lists every option with its default and
