@@ -1,0 +1,16 @@
+# Spec Forge Configuration
+[project]
+name = "boleteria"
+openapi_spec = "openapi.json"
+base_url = "http://localhost:8600"
+
+# Options go under [engine], [llm], [inference], [replay] and [fix]. Ask the core what there is
+# rather than guessing: `get_config` lists every option with its default and
+# says which ones you have changed.
+
+[ci]
+base_url = "http://localhost:8600"
+# Creates the users the fuzz acts as once the API answers, with SPECFORGE_BASE_URL
+# set, and must write identities.toml at the project's root. Example to adapt:
+# https://github.com/Spec-Forge-Testing/specforge-cli/blob/master/docs/ci/identities_example.py
+identities_command = "python3 make_identities.py $SPECFORGE_BASE_URL identities.toml"

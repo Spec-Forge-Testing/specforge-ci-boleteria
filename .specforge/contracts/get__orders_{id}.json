@@ -1,0 +1,36 @@
+{
+  "access": {
+    "grounds": {
+      "basis": "stated",
+      "quote": "        forbid(\"only the buyer who placed an order may read it\")"
+    },
+    "owner_bundle": "orders_id",
+    "policy": "owner_only",
+    "required_role": null
+  },
+  "attack": null,
+  "body": null,
+  "method": "get",
+  "parameters": {
+    "header": {},
+    "path": {},
+    "query": {}
+  },
+  "path_url": "/orders/{id}",
+  "required_parameters": {
+    "header": [],
+    "path": [],
+    "query": []
+  },
+  "risk": {
+    "auth_surface": true,
+    "criticality": "high",
+    "external_side_effects": false,
+    "risk_score": 80,
+    "sensitivity": "financial",
+    "write_operation": false
+  },
+  "seed_cases": null,
+  "semantic_properties": null,
+  "transitions": null
+}

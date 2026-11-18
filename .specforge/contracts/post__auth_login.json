@@ -1,0 +1,192 @@
+{
+  "access": {
+    "grounds": {
+      "basis": "stated",
+      "quote": "  \"security\": null,"
+    },
+    "owner_bundle": null,
+    "policy": "public",
+    "required_role": null
+  },
+  "attack": null,
+  "body": {
+    "default": null,
+    "description": null,
+    "enum": null,
+    "examples": null,
+    "format": null,
+    "grounds": null,
+    "items": null,
+    "maxItems": null,
+    "maxLength": null,
+    "maximum": null,
+    "minItems": null,
+    "minLength": null,
+    "minimum": null,
+    "pattern": null,
+    "properties": {
+      "email": {
+        "default": null,
+        "description": null,
+        "enum": null,
+        "examples": [
+          "ana@example.com"
+        ],
+        "format": "email",
+        "grounds": {
+          "format": {
+            "basis": "assumed",
+            "quote": null
+          }
+        },
+        "items": null,
+        "maxItems": null,
+        "maxLength": null,
+        "maximum": null,
+        "minItems": null,
+        "minLength": null,
+        "minimum": null,
+        "pattern": null,
+        "properties": null,
+        "required": null,
+        "type": "string"
+      },
+      "password": {
+        "default": null,
+        "description": null,
+        "enum": null,
+        "examples": [
+          "ana-2026"
+        ],
+        "format": null,
+        "grounds": {
+          "minLength": {
+            "basis": "assumed",
+            "quote": null
+          }
+        },
+        "items": null,
+        "maxItems": null,
+        "maxLength": null,
+        "maximum": null,
+        "minItems": null,
+        "minLength": 1,
+        "minimum": null,
+        "pattern": null,
+        "properties": null,
+        "required": null,
+        "type": "string"
+      }
+    },
+    "required": null,
+    "type": "object"
+  },
+  "method": "post",
+  "parameters": {
+    "header": {},
+    "path": {},
+    "query": {}
+  },
+  "path_url": "/auth/login",
+  "required_parameters": {
+    "header": [],
+    "path": [],
+    "query": []
+  },
+  "risk": {
+    "auth_surface": true,
+    "criticality": "high",
+    "external_side_effects": false,
+    "risk_score": 85,
+    "sensitivity": "auth",
+    "write_operation": false
+  },
+  "seed_cases": [
+    {
+      "description": "Try the documented example credentials.",
+      "expects": null,
+      "grounds": null,
+      "id": "documented-credentials",
+      "values": {
+        "email": "ana@example.com",
+        "password": "ana-2026"
+      }
+    },
+    {
+      "description": "Try an empty password.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "assumed",
+        "quote": null
+      },
+      "id": "empty-password",
+      "values": {
+        "email": "ana@example.com",
+        "password": ""
+      }
+    },
+    {
+      "description": "Try the minimum nonempty password length.",
+      "expects": null,
+      "grounds": null,
+      "id": "one-character-password",
+      "values": {
+        "email": "ana@example.com",
+        "password": "a"
+      }
+    },
+    {
+      "description": "Try a password just above the minimum nonempty length.",
+      "expects": null,
+      "grounds": null,
+      "id": "two-character-password",
+      "values": {
+        "email": "ana@example.com",
+        "password": "ab"
+      }
+    },
+    {
+      "description": "Try an email without an address shape.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "assumed",
+        "quote": null
+      },
+      "id": "malformed-email",
+      "values": {
+        "email": "not-an-email",
+        "password": "ana-2026"
+      }
+    },
+    {
+      "description": "Try the example email with a different password.",
+      "expects": null,
+      "grounds": null,
+      "id": "example-email-different-password",
+      "values": {
+        "email": "ana@example.com",
+        "password": "incorrect-password"
+      }
+    }
+  ],
+  "semantic_properties": [
+    {
+      "description": "A successful login returns two unpadded URL-safe Base64 components separated by a period.",
+      "expression": {
+        "kind": "matches",
+        "pattern": "^[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+$",
+        "value": {
+          "field": "token",
+          "kind": "field_ref"
+        }
+      },
+      "grounds": {
+        "basis": "stated",
+        "quote": "    return base64.urlsafe_b64encode(raw).rstrip(b\"=\").decode()"
+      },
+      "id": "token-has-signed-payload-shape",
+      "property_class": "response_invariant"
+    }
+  ],
+  "transitions": null
+}

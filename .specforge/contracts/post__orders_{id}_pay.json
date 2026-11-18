@@ -1,0 +1,157 @@
+{
+  "access": {
+    "grounds": {
+      "basis": "stated",
+      "quote": "        forbid(\"only the buyer who placed an order may change it\")"
+    },
+    "owner_bundle": "orders_id",
+    "policy": "owner_only",
+    "required_role": null
+  },
+  "attack": null,
+  "body": {
+    "default": null,
+    "description": null,
+    "enum": null,
+    "examples": null,
+    "format": null,
+    "grounds": null,
+    "items": null,
+    "maxItems": null,
+    "maxLength": null,
+    "maximum": null,
+    "minItems": null,
+    "minLength": null,
+    "minimum": null,
+    "pattern": null,
+    "properties": {
+      "method": {
+        "default": null,
+        "description": null,
+        "enum": null,
+        "examples": [
+          "card",
+          "bank_transfer"
+        ],
+        "format": null,
+        "grounds": null,
+        "items": null,
+        "maxItems": null,
+        "maxLength": null,
+        "maximum": null,
+        "minItems": null,
+        "minLength": null,
+        "minimum": null,
+        "pattern": null,
+        "properties": null,
+        "required": null,
+        "type": "string"
+      }
+    },
+    "required": null,
+    "type": "object"
+  },
+  "method": "post",
+  "parameters": {
+    "header": {},
+    "path": {},
+    "query": {}
+  },
+  "path_url": "/orders/{id}/pay",
+  "required_parameters": {
+    "header": [],
+    "path": [],
+    "query": []
+  },
+  "risk": {
+    "auth_surface": true,
+    "criticality": "high",
+    "external_side_effects": false,
+    "risk_score": 80,
+    "sensitivity": "financial",
+    "write_operation": true
+  },
+  "seed_cases": [
+    {
+      "description": "Pay a reserved order by card.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    method: Literal[\"card\", \"bank_transfer\"]"
+      },
+      "id": "card-payment",
+      "values": {
+        "method": "card"
+      }
+    },
+    {
+      "description": "Pay a reserved order by bank transfer.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    method: Literal[\"card\", \"bank_transfer\"]"
+      },
+      "id": "bank-transfer-payment",
+      "values": {
+        "method": "bank_transfer"
+      }
+    },
+    {
+      "description": "Try a method outside the declared payment choices.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    method: Literal[\"card\", \"bank_transfer\"]"
+      },
+      "id": "unsupported-payment-method",
+      "values": {
+        "method": "cash"
+      }
+    }
+  ],
+  "semantic_properties": [
+    {
+      "description": "A successfully paid order has paid cents equal to its total cents.",
+      "expression": {
+        "kind": "binary_op",
+        "left": {
+          "field": "paid_cents",
+          "kind": "field_ref"
+        },
+        "operator": "==",
+        "right": {
+          "field": "total_cents",
+          "kind": "field_ref"
+        }
+      },
+      "grounds": {
+        "basis": "stated",
+        "quote": "        order[\"paid_cents\"] = order[\"total_cents\"]"
+      },
+      "id": "paid-equals-total",
+      "property_class": "response_invariant"
+    },
+    {
+      "description": "A successfully paid order has paid status.",
+      "expression": {
+        "kind": "binary_op",
+        "left": {
+          "field": "status",
+          "kind": "field_ref"
+        },
+        "operator": "==",
+        "right": {
+          "kind": "literal",
+          "value": "paid"
+        }
+      },
+      "grounds": {
+        "basis": "stated",
+        "quote": "        order[\"status\"] = \"paid\""
+      },
+      "id": "status-is-paid",
+      "property_class": "response_invariant"
+    }
+  ],
+  "transitions": null
+}

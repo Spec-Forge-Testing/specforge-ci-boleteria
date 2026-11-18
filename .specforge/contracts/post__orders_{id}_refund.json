@@ -1,0 +1,197 @@
+{
+  "access": {
+    "grounds": {
+      "basis": "stated",
+      "quote": "forbid(\"only the buyer who placed an order may refund it\")"
+    },
+    "owner_bundle": "orders_id",
+    "policy": "owner_only",
+    "required_role": null
+  },
+  "attack": null,
+  "body": {
+    "default": null,
+    "description": null,
+    "enum": null,
+    "examples": null,
+    "format": null,
+    "grounds": null,
+    "items": null,
+    "maxItems": null,
+    "maxLength": null,
+    "maximum": null,
+    "minItems": null,
+    "minLength": null,
+    "minimum": null,
+    "pattern": null,
+    "properties": {
+      "amount_cents": {
+        "default": null,
+        "description": null,
+        "enum": null,
+        "examples": [
+          1,
+          2,
+          1000000
+        ],
+        "format": null,
+        "grounds": {
+          "minimum": {
+            "basis": "stated",
+            "quote": "if body.amount_cents < 1:"
+          }
+        },
+        "items": null,
+        "maxItems": null,
+        "maxLength": null,
+        "maximum": null,
+        "minItems": null,
+        "minLength": null,
+        "minimum": 1,
+        "pattern": null,
+        "properties": null,
+        "required": null,
+        "type": "integer"
+      }
+    },
+    "required": null,
+    "type": "object"
+  },
+  "method": "post",
+  "parameters": {
+    "header": {},
+    "path": {},
+    "query": {}
+  },
+  "path_url": "/orders/{id}/refund",
+  "required_parameters": {
+    "header": [],
+    "path": [],
+    "query": []
+  },
+  "risk": {
+    "auth_surface": true,
+    "criticality": "high",
+    "external_side_effects": false,
+    "risk_score": 90,
+    "sensitivity": "financial",
+    "write_operation": true
+  },
+  "seed_cases": [
+    {
+      "description": "A refund below zero.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "stated",
+        "quote": "reject(\"amount_cents must be at least 1\")"
+      },
+      "id": "negative-refund",
+      "values": {
+        "amount_cents": -1
+      }
+    },
+    {
+      "description": "A refund immediately below the minimum.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "stated",
+        "quote": "reject(\"amount_cents must be at least 1\")"
+      },
+      "id": "zero-refund",
+      "values": {
+        "amount_cents": 0
+      }
+    },
+    {
+      "description": "A refund at the minimum amount.",
+      "expects": null,
+      "grounds": null,
+      "id": "minimum-refund",
+      "values": {
+        "amount_cents": 1
+      }
+    },
+    {
+      "description": "A refund one cent above the minimum.",
+      "expects": null,
+      "grounds": null,
+      "id": "above-minimum-refund",
+      "values": {
+        "amount_cents": 2
+      }
+    },
+    {
+      "description": "The documented large refund amount, which may exceed the remaining refundable balance.",
+      "expects": null,
+      "grounds": null,
+      "id": "large-refund-example",
+      "values": {
+        "amount_cents": 1000000
+      }
+    }
+  ],
+  "semantic_properties": [
+    {
+      "description": "The total refunded amount must not exceed the amount paid.",
+      "expression": {
+        "kind": "binary_op",
+        "left": {
+          "field": "refunded_cents",
+          "kind": "field_ref"
+        },
+        "operator": "<=",
+        "right": {
+          "field": "paid_cents",
+          "kind": "field_ref"
+        }
+      },
+      "grounds": {
+        "basis": "stated",
+        "quote": "log.warning(\"a refund may not exceed what was paid: order %s, %s\", id, refundable)"
+      },
+      "id": "refund-does-not-exceed-paid",
+      "property_class": "response_invariant"
+    },
+    {
+      "description": "An order whose refunded amount equals its paid amount has refunded status.",
+      "expression": {
+        "condition": {
+          "kind": "binary_op",
+          "left": {
+            "field": "refunded_cents",
+            "kind": "field_ref"
+          },
+          "operator": "==",
+          "right": {
+            "field": "paid_cents",
+            "kind": "field_ref"
+          }
+        },
+        "if_false": {
+          "kind": "literal",
+          "value": true
+        },
+        "if_true": {
+          "kind": "binary_op",
+          "left": {
+            "field": "status",
+            "kind": "field_ref"
+          },
+          "operator": "==",
+          "right": {
+            "kind": "literal",
+            "value": "refunded"
+          }
+        },
+        "kind": "conditional"
+      },
+      "grounds": {
+        "basis": "stated",
+        "quote": "order[\"status\"] = \"refunded\""
+      },
+      "id": "full-refund-status",
+      "property_class": "response_invariant"
+    }
+  ],
+  "transitions": null
+}

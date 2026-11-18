@@ -1,0 +1,227 @@
+{
+  "access": {
+    "grounds": {
+      "basis": "stated",
+      "quote": "        raise HTTPException(status_code=401, detail=\"authentication required\")"
+    },
+    "owner_bundle": null,
+    "policy": "authenticated",
+    "required_role": null
+  },
+  "attack": null,
+  "body": {
+    "default": null,
+    "description": null,
+    "enum": null,
+    "examples": null,
+    "format": null,
+    "grounds": null,
+    "items": null,
+    "maxItems": null,
+    "maxLength": null,
+    "maximum": null,
+    "minItems": null,
+    "minLength": null,
+    "minimum": null,
+    "pattern": null,
+    "properties": {
+      "capacity": {
+        "default": null,
+        "description": null,
+        "enum": null,
+        "examples": [
+          1,
+          900,
+          100000
+        ],
+        "format": null,
+        "grounds": null,
+        "items": null,
+        "maxItems": null,
+        "maxLength": null,
+        "maximum": null,
+        "minItems": null,
+        "minLength": null,
+        "minimum": null,
+        "pattern": null,
+        "properties": null,
+        "required": null,
+        "type": "integer"
+      },
+      "city": {
+        "default": null,
+        "description": null,
+        "enum": null,
+        "examples": [
+          "Buenos Aires"
+        ],
+        "format": null,
+        "grounds": {
+          "minLength": {
+            "basis": "assumed",
+            "quote": null
+          }
+        },
+        "items": null,
+        "maxItems": null,
+        "maxLength": null,
+        "maximum": null,
+        "minItems": null,
+        "minLength": 1,
+        "minimum": null,
+        "pattern": null,
+        "properties": null,
+        "required": null,
+        "type": "string"
+      },
+      "name": {
+        "default": null,
+        "description": null,
+        "enum": null,
+        "examples": [
+          "Club Niceto"
+        ],
+        "format": null,
+        "grounds": {
+          "minLength": {
+            "basis": "assumed",
+            "quote": null
+          }
+        },
+        "items": null,
+        "maxItems": null,
+        "maxLength": null,
+        "maximum": null,
+        "minItems": null,
+        "minLength": 1,
+        "minimum": null,
+        "pattern": null,
+        "properties": null,
+        "required": null,
+        "type": "string"
+      }
+    },
+    "required": null,
+    "type": "object"
+  },
+  "method": "post",
+  "parameters": {
+    "header": {},
+    "path": {},
+    "query": {}
+  },
+  "path_url": "/venues",
+  "required_parameters": {
+    "header": [],
+    "path": [],
+    "query": []
+  },
+  "risk": {
+    "auth_surface": true,
+    "criticality": "medium",
+    "external_side_effects": false,
+    "risk_score": 50,
+    "sensitivity": "public",
+    "write_operation": true
+  },
+  "seed_cases": [
+    {
+      "description": "Capacity immediately below the minimum.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "stated",
+        "quote": "              \"minimum\": 1.0,"
+      },
+      "id": "capacity-below-minimum",
+      "values": {
+        "capacity": 0
+      }
+    },
+    {
+      "description": "Capacity at the minimum.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "              \"minimum\": 1.0,"
+      },
+      "id": "capacity-at-minimum",
+      "values": {
+        "capacity": 1
+      }
+    },
+    {
+      "description": "Capacity immediately above the minimum.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "              \"minimum\": 1.0,"
+      },
+      "id": "capacity-above-minimum",
+      "values": {
+        "capacity": 2
+      }
+    },
+    {
+      "description": "Capacity immediately below the maximum.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "              \"maximum\": 100000.0,"
+      },
+      "id": "capacity-below-maximum",
+      "values": {
+        "capacity": 99999
+      }
+    },
+    {
+      "description": "Capacity at the maximum.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "              \"maximum\": 100000.0,"
+      },
+      "id": "capacity-at-maximum",
+      "values": {
+        "capacity": 100000
+      }
+    },
+    {
+      "description": "Capacity immediately above the maximum.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "stated",
+        "quote": "              \"maximum\": 100000.0,"
+      },
+      "id": "capacity-above-maximum",
+      "values": {
+        "capacity": 100001
+      }
+    },
+    {
+      "description": "A venue with an empty name.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "assumed",
+        "quote": null
+      },
+      "id": "empty-name",
+      "values": {
+        "name": ""
+      }
+    },
+    {
+      "description": "A venue with an empty city.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "assumed",
+        "quote": null
+      },
+      "id": "empty-city",
+      "values": {
+        "city": ""
+      }
+    }
+  ],
+  "semantic_properties": null,
+  "transitions": null
+}

@@ -1,0 +1,370 @@
+{
+  "access": {
+    "grounds": {
+      "basis": "stated",
+      "quote": "        raise HTTPException(status_code=401, detail=\"authentication required\")"
+    },
+    "owner_bundle": null,
+    "policy": "authenticated",
+    "required_role": null
+  },
+  "attack": null,
+  "body": {
+    "default": null,
+    "description": null,
+    "enum": null,
+    "examples": null,
+    "format": null,
+    "grounds": null,
+    "items": null,
+    "maxItems": null,
+    "maxLength": null,
+    "maximum": null,
+    "minItems": null,
+    "minLength": null,
+    "minimum": null,
+    "pattern": null,
+    "properties": {
+      "coupon_code": {
+        "default": null,
+        "description": null,
+        "enum": null,
+        "examples": [
+          "",
+          "VERANO10"
+        ],
+        "format": null,
+        "grounds": null,
+        "items": null,
+        "maxItems": null,
+        "maxLength": null,
+        "maximum": null,
+        "minItems": null,
+        "minLength": null,
+        "minimum": null,
+        "pattern": null,
+        "properties": null,
+        "required": null,
+        "type": "string"
+      },
+      "seats": {
+        "default": null,
+        "description": null,
+        "enum": null,
+        "examples": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "format": null,
+        "grounds": {
+          "maximum": {
+            "basis": "stated",
+            "quote": "        reject(f\"an order holds at most {max_per_order} seats\")"
+          },
+          "minimum": {
+            "basis": "stated",
+            "quote": "    if seats < 1:"
+          }
+        },
+        "items": null,
+        "maxItems": null,
+        "maxLength": null,
+        "maximum": 8,
+        "minItems": null,
+        "minLength": null,
+        "minimum": 1,
+        "pattern": null,
+        "properties": null,
+        "required": null,
+        "type": "integer"
+      }
+    },
+    "required": null,
+    "type": "object"
+  },
+  "method": "post",
+  "parameters": {
+    "header": {},
+    "path": {},
+    "query": {}
+  },
+  "path_url": "/orders",
+  "required_parameters": {
+    "header": [],
+    "path": [],
+    "query": []
+  },
+  "risk": {
+    "auth_surface": true,
+    "criticality": "high",
+    "external_side_effects": false,
+    "risk_score": 75,
+    "sensitivity": "financial",
+    "write_operation": true
+  },
+  "seed_cases": [
+    {
+      "description": "An order with no seats.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "stated",
+        "quote": "        reject(\"an order needs at least one seat\")"
+      },
+      "id": "zero-seats",
+      "values": {
+        "seats": 0
+      }
+    },
+    {
+      "description": "The minimum seat count without a coupon.",
+      "expects": null,
+      "grounds": null,
+      "id": "one-seat",
+      "values": {
+        "coupon_code": "",
+        "seats": 1
+      }
+    },
+    {
+      "description": "One seat above the minimum.",
+      "expects": null,
+      "grounds": null,
+      "id": "two-seats",
+      "values": {
+        "coupon_code": "",
+        "seats": 2
+      }
+    },
+    {
+      "description": "One seat below the order limit.",
+      "expects": null,
+      "grounds": null,
+      "id": "seven-seats",
+      "values": {
+        "coupon_code": "",
+        "seats": 7
+      }
+    },
+    {
+      "description": "The order limit without a coupon.",
+      "expects": null,
+      "grounds": null,
+      "id": "eight-seats",
+      "values": {
+        "coupon_code": "",
+        "seats": 8
+      }
+    },
+    {
+      "description": "One seat above the order limit.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "stated",
+        "quote": "        reject(f\"an order holds at most {max_per_order} seats\")"
+      },
+      "id": "nine-seats",
+      "values": {
+        "coupon_code": "",
+        "seats": 9
+      }
+    },
+    {
+      "description": "One seat below the coupon limit.",
+      "expects": null,
+      "grounds": null,
+      "id": "coupon-three-seats",
+      "values": {
+        "coupon_code": "VERANO10",
+        "seats": 3
+      }
+    },
+    {
+      "description": "The coupon seat limit.",
+      "expects": null,
+      "grounds": null,
+      "id": "coupon-four-seats",
+      "values": {
+        "coupon_code": "VERANO10",
+        "seats": 4
+      }
+    },
+    {
+      "description": "One seat above the stated coupon limit.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "stated",
+        "quote": "        reject(f\"a coupon covers at most {max_per_coupon} seats of an order\")"
+      },
+      "id": "coupon-five-seats",
+      "values": {
+        "coupon_code": "VERANO10",
+        "seats": 5
+      }
+    },
+    {
+      "description": "The order limit with a coupon exceeds the coupon limit.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "stated",
+        "quote": "        reject(f\"a coupon covers at most {max_per_coupon} seats of an order\")"
+      },
+      "id": "coupon-eight-seats",
+      "values": {
+        "coupon_code": "VERANO10",
+        "seats": 8
+      }
+    }
+  ],
+  "semantic_properties": [
+    {
+      "description": "A coupon covers at most four seats per order.",
+      "expression": {
+        "kind": "logical",
+        "operands": [
+          {
+            "kind": "binary_op",
+            "left": {
+              "field": "coupon_code",
+              "kind": "field_ref"
+            },
+            "operator": "==",
+            "right": {
+              "kind": "literal",
+              "value": ""
+            }
+          },
+          {
+            "kind": "binary_op",
+            "left": {
+              "field": "seats",
+              "kind": "field_ref"
+            },
+            "operator": "<=",
+            "right": {
+              "kind": "literal",
+              "value": 4
+            }
+          }
+        ],
+        "operator": "or"
+      },
+      "grounds": {
+        "basis": "stated",
+        "quote": "        reject(f\"a coupon covers at most {max_per_coupon} seats of an order\")"
+      },
+      "id": "coupon-seat-limit",
+      "property_class": "input_constraint"
+    },
+    {
+      "description": "A newly created order has reserved status.",
+      "expression": {
+        "kind": "binary_op",
+        "left": {
+          "field": "status",
+          "kind": "field_ref"
+        },
+        "operator": "==",
+        "right": {
+          "kind": "literal",
+          "value": "reserved"
+        }
+      },
+      "grounds": {
+        "basis": "stated",
+        "quote": "            \"status\": \"reserved\","
+      },
+      "id": "initial-status-reserved",
+      "property_class": "response_invariant"
+    },
+    {
+      "description": "A newly created order has no refunded amount.",
+      "expression": {
+        "kind": "binary_op",
+        "left": {
+          "field": "refunded_cents",
+          "kind": "field_ref"
+        },
+        "operator": "==",
+        "right": {
+          "kind": "literal",
+          "value": 0
+        }
+      },
+      "grounds": {
+        "basis": "stated",
+        "quote": "            \"refunded_cents\": 0,"
+      },
+      "id": "initial-refund-zero",
+      "property_class": "response_invariant"
+    },
+    {
+      "description": "The initial deposit does not exceed one fifth of the total.",
+      "expression": {
+        "kind": "binary_op",
+        "left": {
+          "kind": "binary_op",
+          "left": {
+            "field": "paid_cents",
+            "kind": "field_ref"
+          },
+          "operator": "*",
+          "right": {
+            "kind": "literal",
+            "value": 5
+          }
+        },
+        "operator": "<=",
+        "right": {
+          "field": "total_cents",
+          "kind": "field_ref"
+        }
+      },
+      "grounds": {
+        "basis": "stated",
+        "quote": "    return total_cents * deposit_percent // 100"
+      },
+      "id": "deposit-upper-bound",
+      "property_class": "response_invariant"
+    },
+    {
+      "description": "The initial deposit is less than one cent below one fifth of the total.",
+      "expression": {
+        "kind": "binary_op",
+        "left": {
+          "kind": "binary_op",
+          "left": {
+            "field": "paid_cents",
+            "kind": "field_ref"
+          },
+          "operator": "*",
+          "right": {
+            "kind": "literal",
+            "value": 5
+          }
+        },
+        "operator": ">",
+        "right": {
+          "kind": "binary_op",
+          "left": {
+            "field": "total_cents",
+            "kind": "field_ref"
+          },
+          "operator": "-",
+          "right": {
+            "kind": "literal",
+            "value": 5
+          }
+        }
+      },
+      "grounds": {
+        "basis": "stated",
+        "quote": "    return total_cents * deposit_percent // 100"
+      },
+      "id": "deposit-rounding",
+      "property_class": "response_invariant"
+    }
+  ],
+  "transitions": null
+}

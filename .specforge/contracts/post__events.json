@@ -1,0 +1,374 @@
+{
+  "access": {
+    "grounds": {
+      "basis": "stated",
+      "quote": "def create_event(body: NewEvent, user: User = Depends(require_role(\"organizer\"))) -> dict[str, Any]:"
+    },
+    "owner_bundle": null,
+    "policy": "role_only",
+    "required_role": "organizer"
+  },
+  "attack": null,
+  "body": {
+    "default": null,
+    "description": null,
+    "enum": null,
+    "examples": null,
+    "format": null,
+    "grounds": null,
+    "items": null,
+    "maxItems": null,
+    "maxLength": null,
+    "maximum": null,
+    "minItems": null,
+    "minLength": null,
+    "minimum": null,
+    "pattern": null,
+    "properties": {
+      "capacity": {
+        "default": null,
+        "description": null,
+        "enum": null,
+        "examples": [
+          1,
+          800
+        ],
+        "format": null,
+        "grounds": {
+          "minimum": {
+            "basis": "assumed",
+            "quote": null
+          }
+        },
+        "items": null,
+        "maxItems": null,
+        "maxLength": null,
+        "maximum": null,
+        "minItems": null,
+        "minLength": null,
+        "minimum": 1,
+        "pattern": null,
+        "properties": null,
+        "required": null,
+        "type": "integer"
+      },
+      "category": {
+        "default": null,
+        "description": null,
+        "enum": null,
+        "examples": [
+          "music",
+          "theatre",
+          "comedy",
+          "sports"
+        ],
+        "format": null,
+        "grounds": null,
+        "items": null,
+        "maxItems": null,
+        "maxLength": null,
+        "maximum": null,
+        "minItems": null,
+        "minLength": null,
+        "minimum": null,
+        "pattern": null,
+        "properties": null,
+        "required": null,
+        "type": "string"
+      },
+      "description": {
+        "default": null,
+        "description": null,
+        "enum": null,
+        "examples": [
+          "A milonga night with a live orchestra."
+        ],
+        "format": null,
+        "grounds": null,
+        "items": null,
+        "maxItems": null,
+        "maxLength": null,
+        "maximum": null,
+        "minItems": null,
+        "minLength": null,
+        "minimum": null,
+        "pattern": null,
+        "properties": null,
+        "required": null,
+        "type": "string"
+      },
+      "title": {
+        "default": null,
+        "description": null,
+        "enum": null,
+        "examples": [
+          "Tango en el Club"
+        ],
+        "format": null,
+        "grounds": {
+          "pattern": {
+            "basis": "stated",
+            "quote": "    if not body.title.strip():"
+          }
+        },
+        "items": null,
+        "maxItems": null,
+        "maxLength": null,
+        "maximum": null,
+        "minItems": null,
+        "minLength": null,
+        "minimum": null,
+        "pattern": "\\S",
+        "properties": null,
+        "required": null,
+        "type": "string"
+      }
+    },
+    "required": null,
+    "type": "object"
+  },
+  "method": "post",
+  "parameters": {
+    "header": {},
+    "path": {},
+    "query": {}
+  },
+  "path_url": "/events",
+  "required_parameters": {
+    "header": [],
+    "path": [],
+    "query": []
+  },
+  "risk": {
+    "auth_surface": true,
+    "criticality": "medium",
+    "external_side_effects": false,
+    "risk_score": 60,
+    "sensitivity": "internal",
+    "write_operation": true
+  },
+  "seed_cases": [
+    {
+      "description": "An empty event title.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "stated",
+        "quote": "        reject(\"title must not be blank\")"
+      },
+      "id": "empty-title",
+      "values": {
+        "title": ""
+      }
+    },
+    {
+      "description": "A title containing only whitespace.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "stated",
+        "quote": "        reject(\"title must not be blank\")"
+      },
+      "id": "whitespace-title",
+      "values": {
+        "title": " \t\n"
+      }
+    },
+    {
+      "description": "A title just below the headline truncation length.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    return title[:listing_chars]"
+      },
+      "id": "title-19-characters",
+      "values": {
+        "title": "1234567890123456789"
+      }
+    },
+    {
+      "description": "A title exactly at the headline truncation length.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    return title[:listing_chars]"
+      },
+      "id": "title-20-characters",
+      "values": {
+        "title": "12345678901234567890"
+      }
+    },
+    {
+      "description": "A title just above the headline truncation length.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    return title[:listing_chars]"
+      },
+      "id": "title-21-characters",
+      "values": {
+        "title": "123456789012345678901"
+      }
+    },
+    {
+      "description": "An event with no capacity.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "assumed",
+        "quote": null
+      },
+      "id": "zero-capacity",
+      "values": {
+        "capacity": 0
+      }
+    },
+    {
+      "description": "An event with negative capacity.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "assumed",
+        "quote": null
+      },
+      "id": "negative-capacity",
+      "values": {
+        "capacity": -1
+      }
+    },
+    {
+      "description": "The smallest positive event capacity.",
+      "expects": null,
+      "grounds": null,
+      "id": "minimum-capacity",
+      "values": {
+        "capacity": 1
+      }
+    },
+    {
+      "description": "The example event capacity.",
+      "expects": null,
+      "grounds": null,
+      "id": "example-capacity",
+      "values": {
+        "capacity": 800
+      }
+    },
+    {
+      "description": "The music category.",
+      "expects": null,
+      "grounds": null,
+      "id": "music-category",
+      "values": {
+        "category": "music"
+      }
+    },
+    {
+      "description": "The theatre category.",
+      "expects": null,
+      "grounds": null,
+      "id": "theatre-category",
+      "values": {
+        "category": "theatre"
+      }
+    },
+    {
+      "description": "The comedy category.",
+      "expects": null,
+      "grounds": null,
+      "id": "comedy-category",
+      "values": {
+        "category": "comedy"
+      }
+    },
+    {
+      "description": "The sports category.",
+      "expects": null,
+      "grounds": null,
+      "id": "sports-category",
+      "values": {
+        "category": "sports"
+      }
+    },
+    {
+      "description": "A category outside the declared enum.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "stated",
+        "quote": "                \"sports\""
+      },
+      "id": "unknown-category",
+      "values": {
+        "category": "unknown"
+      }
+    }
+  ],
+  "semantic_properties": [
+    {
+      "description": "The returned headline has at most 20 characters.",
+      "expression": {
+        "kind": "binary_op",
+        "left": {
+          "function": "length",
+          "kind": "aggregation",
+          "over": {
+            "field": "headline",
+            "kind": "field_ref"
+          }
+        },
+        "operator": "<=",
+        "right": {
+          "kind": "literal",
+          "value": 20
+        }
+      },
+      "grounds": {
+        "basis": "stated",
+        "quote": "    return title[:listing_chars]"
+      },
+      "id": "headline-at-most-20-characters",
+      "property_class": "response_invariant"
+    },
+    {
+      "description": "A title of at most 20 characters is returned unchanged as the headline.",
+      "expression": {
+        "condition": {
+          "kind": "binary_op",
+          "left": {
+            "function": "length",
+            "kind": "aggregation",
+            "over": {
+              "field": "title",
+              "kind": "field_ref"
+            }
+          },
+          "operator": "<=",
+          "right": {
+            "kind": "literal",
+            "value": 20
+          }
+        },
+        "if_false": {
+          "kind": "literal",
+          "value": true
+        },
+        "if_true": {
+          "kind": "binary_op",
+          "left": {
+            "field": "headline",
+            "kind": "field_ref"
+          },
+          "operator": "==",
+          "right": {
+            "field": "title",
+            "kind": "field_ref"
+          }
+        },
+        "kind": "conditional"
+      },
+      "grounds": {
+        "basis": "stated",
+        "quote": "    return title[:listing_chars]"
+      },
+      "id": "short-title-is-headline",
+      "property_class": "response_invariant"
+    }
+  ],
+  "transitions": null
+}

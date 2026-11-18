@@ -1,0 +1,109 @@
+{
+  "access": {
+    "grounds": {
+      "basis": "stated",
+      "quote": "  \"security\": null,"
+    },
+    "owner_bundle": null,
+    "policy": "public",
+    "required_role": null
+  },
+  "attack": null,
+  "body": null,
+  "method": "get",
+  "parameters": {
+    "header": {},
+    "path": {},
+    "query": {
+      "sector": {
+        "default": "general",
+        "description": null,
+        "enum": null,
+        "examples": [
+          "general",
+          "balcony",
+          "vip"
+        ],
+        "format": null,
+        "grounds": null,
+        "items": null,
+        "maxItems": null,
+        "maxLength": null,
+        "maximum": null,
+        "minItems": null,
+        "minLength": null,
+        "minimum": null,
+        "pattern": null,
+        "properties": null,
+        "required": null,
+        "type": "string"
+      }
+    }
+  },
+  "path_url": "/shows/{id}/seats",
+  "required_parameters": {
+    "header": [],
+    "path": [],
+    "query": []
+  },
+  "risk": {
+    "auth_surface": false,
+    "criticality": "low",
+    "external_side_effects": false,
+    "risk_score": 25,
+    "sensitivity": "public",
+    "write_operation": false
+  },
+  "seed_cases": [
+    {
+      "description": "Exercise the general seat share and surcharge.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    return {\"general\": 0, \"balcony\": 15}[sector]"
+      },
+      "id": "general-sector",
+      "values": {
+        "sector": "general"
+      }
+    },
+    {
+      "description": "Exercise the balcony seat share and surcharge.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    return {\"general\": 0, \"balcony\": 15}[sector]"
+      },
+      "id": "balcony-sector",
+      "values": {
+        "sector": "balcony"
+      }
+    },
+    {
+      "description": "Exercise the permitted VIP sector, which has no surcharge entry.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    return {\"general\": 70, \"balcony\": 20, \"vip\": 10}[sector]"
+      },
+      "id": "vip-missing-surcharge",
+      "values": {
+        "sector": "vip"
+      }
+    },
+    {
+      "description": "Reject a sector outside the declared enum.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "stated",
+        "quote": "        \"enum\": ["
+      },
+      "id": "unknown-sector",
+      "values": {
+        "sector": "orchestra"
+      }
+    }
+  ],
+  "semantic_properties": null,
+  "transitions": null
+}

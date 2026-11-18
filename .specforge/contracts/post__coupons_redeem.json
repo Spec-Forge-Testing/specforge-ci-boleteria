@@ -1,0 +1,213 @@
+{
+  "access": {
+    "grounds": {
+      "basis": "stated",
+      "quote": "        raise HTTPException(status_code=401, detail=\"authentication required\")"
+    },
+    "owner_bundle": null,
+    "policy": "authenticated",
+    "required_role": null
+  },
+  "attack": null,
+  "body": {
+    "default": null,
+    "description": null,
+    "enum": null,
+    "examples": null,
+    "format": null,
+    "grounds": null,
+    "items": null,
+    "maxItems": null,
+    "maxLength": null,
+    "maximum": null,
+    "minItems": null,
+    "minLength": null,
+    "minimum": null,
+    "pattern": null,
+    "properties": {
+      "code": {
+        "default": null,
+        "description": null,
+        "enum": null,
+        "examples": [
+          "BIENVENIDA10",
+          "AMIGOS20",
+          "STAFF100",
+          "VERANO10"
+        ],
+        "format": null,
+        "grounds": null,
+        "items": null,
+        "maxItems": null,
+        "maxLength": null,
+        "maximum": null,
+        "minItems": null,
+        "minLength": null,
+        "minimum": null,
+        "pattern": null,
+        "properties": null,
+        "required": null,
+        "type": "string"
+      }
+    },
+    "required": null,
+    "type": "object"
+  },
+  "method": "post",
+  "parameters": {
+    "header": {},
+    "path": {},
+    "query": {}
+  },
+  "path_url": "/coupons/redeem",
+  "required_parameters": {
+    "header": [],
+    "path": [],
+    "query": []
+  },
+  "risk": {
+    "auth_surface": true,
+    "criticality": "medium",
+    "external_side_effects": false,
+    "risk_score": 50,
+    "sensitivity": "financial",
+    "write_operation": false
+  },
+  "seed_cases": [
+    {
+      "description": "Redeem the first mapped house promotion.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    house_percent = {\"BIENVENIDA10\": 10, \"AMIGOS20\": 20}"
+      },
+      "id": "bienvenida-house-code",
+      "values": {
+        "code": "BIENVENIDA10"
+      }
+    },
+    {
+      "description": "Redeem the second mapped house promotion.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    house_percent = {\"BIENVENIDA10\": 10, \"AMIGOS20\": 20}"
+      },
+      "id": "amigos-house-code",
+      "values": {
+        "code": "AMIGOS20"
+      }
+    },
+    {
+      "description": "Try the listed house promotion missing from the discount lookup.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    house_codes = (\"BIENVENIDA10\", \"AMIGOS20\", \"STAFF100\")"
+      },
+      "id": "staff-missing-map-entry",
+      "values": {
+        "code": "STAFF100"
+      }
+    },
+    {
+      "description": "Try the documented organizer-coupon example.",
+      "expects": null,
+      "grounds": null,
+      "id": "documented-coupon-example",
+      "values": {
+        "code": "VERANO10"
+      }
+    },
+    {
+      "description": "Try an empty coupon code through the lookup.",
+      "expects": null,
+      "grounds": null,
+      "id": "empty-code",
+      "values": {
+        "code": ""
+      }
+    }
+  ],
+  "semantic_properties": [
+    {
+      "description": "A successful BIENVENIDA10 redemption returns a 10 percent discount.",
+      "expression": {
+        "kind": "logical",
+        "operands": [
+          {
+            "kind": "binary_op",
+            "left": {
+              "field": "code",
+              "kind": "field_ref"
+            },
+            "operator": "!=",
+            "right": {
+              "kind": "literal",
+              "value": "BIENVENIDA10"
+            }
+          },
+          {
+            "kind": "binary_op",
+            "left": {
+              "field": "percent_off",
+              "kind": "field_ref"
+            },
+            "operator": "==",
+            "right": {
+              "kind": "literal",
+              "value": 10
+            }
+          }
+        ],
+        "operator": "or"
+      },
+      "grounds": {
+        "basis": "stated",
+        "quote": "    house_percent = {\"BIENVENIDA10\": 10, \"AMIGOS20\": 20}"
+      },
+      "id": "bienvenida-discount",
+      "property_class": "response_invariant"
+    },
+    {
+      "description": "A successful AMIGOS20 redemption returns a 20 percent discount.",
+      "expression": {
+        "kind": "logical",
+        "operands": [
+          {
+            "kind": "binary_op",
+            "left": {
+              "field": "code",
+              "kind": "field_ref"
+            },
+            "operator": "!=",
+            "right": {
+              "kind": "literal",
+              "value": "AMIGOS20"
+            }
+          },
+          {
+            "kind": "binary_op",
+            "left": {
+              "field": "percent_off",
+              "kind": "field_ref"
+            },
+            "operator": "==",
+            "right": {
+              "kind": "literal",
+              "value": 20
+            }
+          }
+        ],
+        "operator": "or"
+      },
+      "grounds": {
+        "basis": "stated",
+        "quote": "    house_percent = {\"BIENVENIDA10\": 10, \"AMIGOS20\": 20}"
+      },
+      "id": "amigos-discount",
+      "property_class": "response_invariant"
+    }
+  ],
+  "transitions": null
+}

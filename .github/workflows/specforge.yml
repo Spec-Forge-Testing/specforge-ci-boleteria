@@ -1,0 +1,56 @@
+# SpecForge: fuzz the API this job starts and fail only on a defect the committed baseline does
+# not accept. Written by `specforge ci init`; adapt the steps marked ADAPT. The model's key is
+# optional: without it, committed contracts are still used and an endpoint without one is fuzzed
+# from its schema. Set LLM_MODEL to the model the committed contracts were inferred with.
+name: specforge
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+  packages: read
+
+env:
+  IMAGE: ghcr.io/spec-forge-testing/specforge:ci-v4.1
+
+jobs:
+  specforge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      # ADAPT: start your API with an empty database, published on localhost. `ci` waits
+      # for it to answer.
+      - name: Start the API
+        run: docker compose up -d --build
+
+      # Contracts earlier jobs inferred and the repository does not have yet.
+      - name: Restore the contract cache
+        uses: actions/cache@v4
+        with:
+          path: .specforge-cache
+          key: specforge-contracts-${{ github.sha }}
+          restore-keys: specforge-contracts-
+
+      # ADAPT: the model's key, if you have one, as a secret, and the model the committed
+      # contracts were inferred with.
+      - name: SpecForge
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          LLM_MODEL: openai/gpt-6.1-terra
+        run: >-
+          docker run --rm --network host --user "$(id -u):$(id -g)" -e HOME=/tmp
+          -v "$PWD:/repo" -e OPENAI_API_KEY -e LLM_MODEL "$IMAGE" ci
+
+      - name: Keep the report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: specforge
+          path: specforge-out/

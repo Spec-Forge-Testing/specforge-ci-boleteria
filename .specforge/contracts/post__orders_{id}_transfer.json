@@ -1,0 +1,79 @@
+{
+  "access": {
+    "grounds": {
+      "basis": "stated",
+      "quote": "        forbid(\"only the buyer who placed an order may change it\")"
+    },
+    "owner_bundle": "orders_id",
+    "policy": "owner_only",
+    "required_role": null
+  },
+  "attack": null,
+  "body": null,
+  "method": "post",
+  "parameters": {
+    "header": {},
+    "path": {},
+    "query": {}
+  },
+  "path_url": "/orders/{id}/transfer",
+  "required_parameters": {
+    "header": [],
+    "path": [],
+    "query": []
+  },
+  "risk": {
+    "auth_surface": true,
+    "criticality": "high",
+    "external_side_effects": false,
+    "risk_score": 75,
+    "sensitivity": "financial",
+    "write_operation": true
+  },
+  "seed_cases": null,
+  "semantic_properties": [
+    {
+      "description": "A successfully transferred order is not refunded.",
+      "expression": {
+        "kind": "binary_op",
+        "left": {
+          "field": "status",
+          "kind": "field_ref"
+        },
+        "operator": "!=",
+        "right": {
+          "kind": "literal",
+          "value": "refunded"
+        }
+      },
+      "grounds": {
+        "basis": "stated",
+        "quote": "        if order[\"status\"] == \"refunded\":"
+      },
+      "id": "successful-order-not-refunded",
+      "property_class": "response_invariant"
+    },
+    {
+      "description": "A successfully transferred order is not cancelled.",
+      "expression": {
+        "kind": "binary_op",
+        "left": {
+          "field": "status",
+          "kind": "field_ref"
+        },
+        "operator": "!=",
+        "right": {
+          "kind": "literal",
+          "value": "cancelled"
+        }
+      },
+      "grounds": {
+        "basis": "stated",
+        "quote": "    if order[\"status\"] == \"cancelled\":"
+      },
+      "id": "successful-order-not-cancelled",
+      "property_class": "response_invariant"
+    }
+  ],
+  "transitions": null
+}

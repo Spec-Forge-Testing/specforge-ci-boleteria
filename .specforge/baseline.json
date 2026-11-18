@@ -1,0 +1,214 @@
+{
+  "defects": [
+    {
+      "identity_label": "ana",
+      "invariant_violated": "contract_completeness",
+      "method": "POST",
+      "path": "/buyers",
+      "status_code": 400,
+      "summary": "`POST /buyers` answered 400 when `body.password = ***` was sent: the server enforces `minLength: 1`, a rule the inferred contract declares and the spec leaves out."
+    },
+    {
+      "identity_label": "ana",
+      "invariant_violated": "sensitive_data_exposure",
+      "method": "GET",
+      "path": "/buyers/me",
+      "status_code": 200,
+      "summary": "`GET /buyers/me` answered 200 with an undeclared secret field: `/password_hash`."
+    },
+    {
+      "identity_label": "olga",
+      "invariant_violated": "contract_completeness",
+      "method": "POST",
+      "path": "/coupons",
+      "status_code": 400,
+      "summary": "`POST /coupons` answered 400 when `body.code = \"\"` was sent: the server enforces `minLength: 1`, a rule the inferred contract declares and the spec leaves out (observed once; nothing to judge it against)."
+    },
+    {
+      "identity_label": "olga",
+      "invariant_violated": "expected_rejection",
+      "method": "POST",
+      "path": "/coupons",
+      "status_code": 201,
+      "summary": "`POST /coupons` answered 201 to seed case `unicode-whitespace-code`, which its contract expects to be rejected (observed once; it did not reproduce)."
+    },
+    {
+      "identity_label": "olga",
+      "invariant_violated": "input_validation",
+      "method": "POST",
+      "path": "/coupons",
+      "status_code": 201,
+      "summary": "`POST /coupons` accepted (201) `body.percent_off = 9223372036854775808`, which its contract forbids (`maximum: 100`) (observed once; it did not reproduce)."
+    },
+    {
+      "identity_label": "ana",
+      "invariant_violated": "not_a_server_error",
+      "method": "POST",
+      "path": "/coupons/redeem",
+      "status_code": 0,
+      "summary": "`POST /coupons/redeem` dropped the connection (`Server disconnected without sending a response.`) on the simplest request its contract allows (observed once; it did not reproduce)."
+    },
+    {
+      "identity_label": "ana",
+      "invariant_violated": "not_a_server_error",
+      "method": "POST",
+      "path": "/coupons/redeem",
+      "status_code": 500,
+      "summary": "`POST /coupons/redeem` answered 500 to a request setting `body.code = \"STAFF100\"`."
+    },
+    {
+      "identity_label": "olga",
+      "invariant_violated": "contract_completeness",
+      "method": "POST",
+      "path": "/events",
+      "status_code": 400,
+      "summary": "`POST /events` answered 400 when `body.title = \"\"` was sent: the server enforces `pattern: \"\\\\S\"`, a rule the inferred contract declares and the spec leaves out (observed once; nothing to judge it against)."
+    },
+    {
+      "identity_label": "ana",
+      "invariant_violated": "contract_completeness",
+      "method": "GET",
+      "path": "/events/search",
+      "status_code": 400,
+      "summary": "`GET /events/search` answered 400 to a request its contract allows; the response names no declared field."
+    },
+    {
+      "identity_label": "ana",
+      "invariant_violated": "expected_acceptance",
+      "method": "GET",
+      "path": "/events/search",
+      "status_code": 400,
+      "summary": "`GET /events/search` answered 400 to seed case `apostrophe-in-title`, which its contract expects to be accepted (the server must accept this case: Search for text containing an apostrophe.)."
+    },
+    {
+      "identity_label": "ana",
+      "invariant_violated": "information_disclosure",
+      "method": "GET",
+      "path": "/events/search",
+      "status_code": 400,
+      "summary": "`GET /events/search` answered 400 disclosing `sql_driver_error` (`OperationalError`)."
+    },
+    {
+      "identity_label": "olga",
+      "invariant_violated": "contract_completeness",
+      "method": "PUT",
+      "path": "/events/{id}",
+      "status_code": 400,
+      "summary": "`PUT /events/{id}` answered 400 when `body.title = \"\"` was sent: the server enforces `minLength: 1`, a rule the inferred contract declares and the spec leaves out (observed once; nothing to judge it against)."
+    },
+    {
+      "identity_label": "ana",
+      "invariant_violated": "response_schema_conformance",
+      "method": "GET",
+      "path": "/events/{id}/availability",
+      "status_code": 200,
+      "summary": "`GET /events/{id}/availability` answered 200 with a body where `/free_seats` breaks `type: \"integer\"` (got `\"0\"`)."
+    },
+    {
+      "identity_label": "ana",
+      "invariant_violated": "semantic_property",
+      "method": "GET",
+      "path": "/events/{id}/availability",
+      "status_code": 200,
+      "summary": "`GET /events/{id}/availability` answered 200 although its rule `no-shows-no-free-seats` (An event with no shows has zero free seats.) does not hold: `free_seats = \"0\"`, `shows = 0`."
+    },
+    {
+      "identity_label": "olga",
+      "invariant_violated": "contract_completeness",
+      "method": "POST",
+      "path": "/events/{id}/shows",
+      "status_code": 400,
+      "summary": "`POST /events/{id}/shows` answered 400 to a request that breaks only its rule `end-after-start`: `ends_at = 10`, `starts_at = 10`; the server enforces it, a rule the inferred contract declares and the spec leaves out (observed once; nothing to judge it against)."
+    },
+    {
+      "identity_label": "olga",
+      "invariant_violated": "expected_acceptance",
+      "method": "POST",
+      "path": "/events/{id}/shows",
+      "status_code": 400,
+      "summary": "`POST /events/{id}/shows` answered 400 to seed case `end-after-start-digit-boundary`, which its contract expects to be accepted (the server must accept this case: End after start across a decimal digit boundary.)."
+    },
+    {
+      "identity_label": "olga",
+      "invariant_violated": "semantic_property",
+      "method": "POST",
+      "path": "/events/{id}/shows",
+      "status_code": 201,
+      "summary": "`POST /events/{id}/shows` accepted (201) a request that breaks its rule `end-after-start` (The show must end after it starts.): `ends_at = 9`, `starts_at = 10`."
+    },
+    {
+      "identity_label": "ana",
+      "invariant_violated": "contract_completeness",
+      "method": "POST",
+      "path": "/orders",
+      "status_code": 400,
+      "summary": "`POST /orders` answered 400 when `body.seats = 9` was sent: the server enforces `maximum: 8`, a rule the inferred contract declares and the spec leaves out."
+    },
+    {
+      "identity_label": "olga",
+      "invariant_violated": "contract_completeness",
+      "method": "POST",
+      "path": "/orders",
+      "status_code": 400,
+      "summary": "`POST /orders` answered 400 to a request its contract allows; the response names no declared field (observed once; nothing to judge it against)."
+    },
+    {
+      "identity_label": "ana",
+      "invariant_violated": "semantic_property",
+      "method": "POST",
+      "path": "/orders",
+      "status_code": 201,
+      "summary": "`POST /orders` accepted (201) a request that breaks its rule `coupon-seat-limit` (A coupon covers at most four seats per order.): `coupon_code = \"VERANO10\"`, `seats = 5`."
+    },
+    {
+      "identity_label": "ana",
+      "invariant_violated": "contract_completeness",
+      "method": "POST",
+      "path": "/orders/quote",
+      "status_code": 400,
+      "summary": "`POST /orders/quote` answered 400 when `body.seats = 9` was sent: the server enforces `maximum: 8`, a rule the inferred contract declares and the spec leaves out."
+    },
+    {
+      "identity_label": "ana",
+      "invariant_violated": "semantic_property",
+      "method": "POST",
+      "path": "/orders/quote",
+      "status_code": 200,
+      "summary": "`POST /orders/quote` accepted (200) a request that breaks its rule `coupon-seat-limit` (A coupon covers at most four seats in an order.): `coupon_code = \"VERANO10\"`, `seats = 5`."
+    },
+    {
+      "identity_label": "ana",
+      "invariant_violated": "contract_completeness",
+      "method": "POST",
+      "path": "/orders/{id}/refund",
+      "status_code": 400,
+      "summary": "`POST /orders/{id}/refund` answered 400 when `body.amount_cents = 0` was sent: the server enforces `minimum: 1`, a rule the inferred contract declares and the spec leaves out."
+    },
+    {
+      "identity_label": "ana",
+      "invariant_violated": "semantic_property",
+      "method": "POST",
+      "path": "/orders/{id}/refund",
+      "status_code": 200,
+      "summary": "`POST /orders/{id}/refund` answered 200 although its rule `refund-does-not-exceed-paid` (The total refunded amount must not exceed the amount paid.) does not hold: `paid_cents = 616000`, `refunded_cents = 4000480`."
+    },
+    {
+      "identity_label": "ana",
+      "invariant_violated": "not_a_server_error",
+      "method": "GET",
+      "path": "/shows/{id}/seats",
+      "status_code": 0,
+      "summary": "`GET /shows/{id}/seats` dropped the connection (`Server disconnected without sending a response.`) on the simplest request its contract allows (observed once; the run stopped before retrying it)."
+    },
+    {
+      "identity_label": "ana",
+      "invariant_violated": "not_a_server_error",
+      "method": "GET",
+      "path": "/shows/{id}/seats",
+      "status_code": 500,
+      "summary": "`GET /shows/{id}/seats` answered 500 to a request setting `query.sector = \"vip\"`."
+    }
+  ],
+  "schema_version": 1,
+  "use_llm": true
+}

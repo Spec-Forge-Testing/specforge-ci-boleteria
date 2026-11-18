@@ -1,0 +1,315 @@
+{
+  "access": {
+    "grounds": {
+      "basis": "stated",
+      "quote": "    id: int, body: NewShow, user: User = Depends(require_role(\"organizer\"))"
+    },
+    "owner_bundle": null,
+    "policy": "role_only",
+    "required_role": "organizer"
+  },
+  "attack": null,
+  "body": {
+    "default": null,
+    "description": null,
+    "enum": null,
+    "examples": null,
+    "format": null,
+    "grounds": null,
+    "items": null,
+    "maxItems": null,
+    "maxLength": null,
+    "maximum": null,
+    "minItems": null,
+    "minLength": null,
+    "minimum": null,
+    "pattern": null,
+    "properties": {
+      "ends_at": {
+        "default": null,
+        "description": null,
+        "enum": null,
+        "examples": [
+          1,
+          1797129000
+        ],
+        "format": null,
+        "grounds": null,
+        "items": null,
+        "maxItems": null,
+        "maxLength": null,
+        "maximum": null,
+        "minItems": null,
+        "minLength": null,
+        "minimum": null,
+        "pattern": null,
+        "properties": null,
+        "required": null,
+        "type": "integer"
+      },
+      "price_cents": {
+        "default": null,
+        "description": null,
+        "enum": null,
+        "examples": [
+          0,
+          3500000
+        ],
+        "format": null,
+        "grounds": {
+          "minimum": {
+            "basis": "stated",
+            "quote": "    if body.price_cents < 0:"
+          }
+        },
+        "items": null,
+        "maxItems": null,
+        "maxLength": null,
+        "maximum": null,
+        "minItems": null,
+        "minLength": null,
+        "minimum": 0,
+        "pattern": null,
+        "properties": null,
+        "required": null,
+        "type": "integer"
+      },
+      "starts_at": {
+        "default": null,
+        "description": null,
+        "enum": null,
+        "examples": [
+          0,
+          1797120000
+        ],
+        "format": null,
+        "grounds": {
+          "minimum": {
+            "basis": "stated",
+            "quote": "    if body.starts_at < 0:"
+          }
+        },
+        "items": null,
+        "maxItems": null,
+        "maxLength": null,
+        "maximum": null,
+        "minItems": null,
+        "minLength": null,
+        "minimum": 0,
+        "pattern": null,
+        "properties": null,
+        "required": null,
+        "type": "integer"
+      }
+    },
+    "required": null,
+    "type": "object"
+  },
+  "method": "post",
+  "parameters": {
+    "header": {},
+    "path": {},
+    "query": {}
+  },
+  "path_url": "/events/{id}/shows",
+  "required_parameters": {
+    "header": [],
+    "path": [],
+    "query": []
+  },
+  "risk": {
+    "auth_surface": true,
+    "criticality": "high",
+    "external_side_effects": false,
+    "risk_score": 65,
+    "sensitivity": "financial",
+    "write_operation": true
+  },
+  "seed_cases": [
+    {
+      "description": "Start immediately below the Unix-time boundary.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    if body.starts_at < 0:"
+      },
+      "id": "negative-start",
+      "values": {
+        "ends_at": 2,
+        "starts_at": -1
+      }
+    },
+    {
+      "description": "Start at the Unix-time boundary.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    if body.starts_at < 0:"
+      },
+      "id": "zero-start",
+      "values": {
+        "ends_at": 2,
+        "starts_at": 0
+      }
+    },
+    {
+      "description": "Start immediately above the Unix-time boundary.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    if body.starts_at < 0:"
+      },
+      "id": "one-start",
+      "values": {
+        "ends_at": 2,
+        "starts_at": 1
+      }
+    },
+    {
+      "description": "Price immediately below zero.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    if body.price_cents < 0:"
+      },
+      "id": "negative-price",
+      "values": {
+        "price_cents": -1
+      }
+    },
+    {
+      "description": "A free show at the price boundary.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    if body.price_cents < 0:"
+      },
+      "id": "zero-price",
+      "values": {
+        "price_cents": 0
+      }
+    },
+    {
+      "description": "Price immediately above zero.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    if body.price_cents < 0:"
+      },
+      "id": "positive-price",
+      "values": {
+        "price_cents": 1
+      }
+    },
+    {
+      "description": "End equal to start.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "stated",
+        "quote": "        reject(f\"ends_at ({ends}) must be after starts_at ({starts})\")"
+      },
+      "id": "equal-times",
+      "values": {
+        "ends_at": 10,
+        "starts_at": 10
+      }
+    },
+    {
+      "description": "End before start across a decimal digit boundary.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "stated",
+        "quote": "        reject(f\"ends_at ({ends}) must be after starts_at ({starts})\")"
+      },
+      "id": "end-before-start-digit-boundary",
+      "values": {
+        "ends_at": 9,
+        "starts_at": 10
+      }
+    },
+    {
+      "description": "End after start across a decimal digit boundary.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "        reject(f\"ends_at ({ends}) must be after starts_at ({starts})\")"
+      },
+      "id": "end-after-start-digit-boundary",
+      "values": {
+        "ends_at": 10,
+        "starts_at": 9
+      }
+    },
+    {
+      "description": "End one second after start with equal digit widths.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "        reject(f\"ends_at ({ends}) must be after starts_at ({starts})\")"
+      },
+      "id": "end-after-start-same-width",
+      "values": {
+        "ends_at": 11,
+        "starts_at": 10
+      }
+    },
+    {
+      "description": "End one second before start with equal digit widths.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "stated",
+        "quote": "        reject(f\"ends_at ({ends}) must be after starts_at ({starts})\")"
+      },
+      "id": "end-before-start-same-width",
+      "values": {
+        "ends_at": 10,
+        "starts_at": 11
+      }
+    }
+  ],
+  "semantic_properties": [
+    {
+      "description": "The show must end after it starts.",
+      "expression": {
+        "kind": "binary_op",
+        "left": {
+          "field": "ends_at",
+          "kind": "field_ref"
+        },
+        "operator": ">",
+        "right": {
+          "field": "starts_at",
+          "kind": "field_ref"
+        }
+      },
+      "grounds": {
+        "basis": "stated",
+        "quote": "        reject(f\"ends_at ({ends}) must be after starts_at ({starts})\")"
+      },
+      "id": "end-after-start",
+      "property_class": "input_constraint"
+    },
+    {
+      "description": "A newly created show has all its capacity available.",
+      "expression": {
+        "kind": "binary_op",
+        "left": {
+          "field": "free_seats",
+          "kind": "field_ref"
+        },
+        "operator": "==",
+        "right": {
+          "field": "capacity",
+          "kind": "field_ref"
+        }
+      },
+      "grounds": {
+        "basis": "stated",
+        "quote": "        \"reserved\": 0,"
+      },
+      "id": "initial-free-seats",
+      "property_class": "response_invariant"
+    }
+  ],
+  "transitions": null
+}

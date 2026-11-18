@@ -1,0 +1,36 @@
+{
+  "access": {
+    "grounds": {
+      "basis": "stated",
+      "quote": "        forbid(\"admin only\")"
+    },
+    "owner_bundle": null,
+    "policy": "role_only",
+    "required_role": "admin"
+  },
+  "attack": null,
+  "body": null,
+  "method": "get",
+  "parameters": {
+    "header": {},
+    "path": {},
+    "query": {}
+  },
+  "path_url": "/admin/payouts",
+  "required_parameters": {
+    "header": [],
+    "path": [],
+    "query": []
+  },
+  "risk": {
+    "auth_surface": true,
+    "criticality": "critical",
+    "external_side_effects": false,
+    "risk_score": 90,
+    "sensitivity": "financial",
+    "write_operation": false
+  },
+  "seed_cases": null,
+  "semantic_properties": null,
+  "transitions": null
+}

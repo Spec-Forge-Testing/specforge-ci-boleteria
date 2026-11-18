@@ -1,0 +1,173 @@
+{
+  "access": {
+    "grounds": {
+      "basis": "stated",
+      "quote": "  \"security\": null,"
+    },
+    "owner_bundle": null,
+    "policy": "public",
+    "required_role": null
+  },
+  "attack": null,
+  "body": null,
+  "method": "get",
+  "parameters": {
+    "header": {},
+    "path": {},
+    "query": {
+      "q": {
+        "default": null,
+        "description": null,
+        "enum": null,
+        "examples": [
+          "",
+          "music",
+          "%",
+          "_",
+          "'"
+        ],
+        "format": null,
+        "grounds": null,
+        "items": null,
+        "maxItems": null,
+        "maxLength": null,
+        "maximum": null,
+        "minItems": null,
+        "minLength": null,
+        "minimum": null,
+        "pattern": null,
+        "properties": null,
+        "required": null,
+        "type": "string"
+      }
+    }
+  },
+  "path_url": "/events/search",
+  "required_parameters": {
+    "header": [],
+    "path": [],
+    "query": [
+      "q"
+    ]
+  },
+  "risk": {
+    "auth_surface": false,
+    "criticality": "medium",
+    "external_side_effects": false,
+    "risk_score": 65,
+    "sensitivity": "public",
+    "write_operation": false
+  },
+  "seed_cases": [
+    {
+      "description": "Search with an empty substring.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    \"\"\"The events whose title holds `q`, by the search index.\"\"\""
+      },
+      "id": "empty-search",
+      "values": {
+        "q": ""
+      }
+    },
+    {
+      "description": "Search for a literal apostrophe.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    \"\"\"The events whose title holds `q`, by the search index.\"\"\""
+      },
+      "id": "single-quote",
+      "values": {
+        "q": "'"
+      }
+    },
+    {
+      "description": "Search for text containing an apostrophe.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    \"\"\"The events whose title holds `q`, by the search index.\"\"\""
+      },
+      "id": "apostrophe-in-title",
+      "values": {
+        "q": "O'Reilly"
+      }
+    },
+    {
+      "description": "Search for a literal percent sign.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    \"\"\"The events whose title holds `q`, by the search index.\"\"\""
+      },
+      "id": "percent-wildcard",
+      "values": {
+        "q": "%"
+      }
+    },
+    {
+      "description": "Search for a literal underscore.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    \"\"\"The events whose title holds `q`, by the search index.\"\"\""
+      },
+      "id": "underscore-wildcard",
+      "values": {
+        "q": "_"
+      }
+    },
+    {
+      "description": "Search with a null character that SQLite cannot parse in SQL text.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    \"\"\"The events whose title holds `q`, by the search index.\"\"\""
+      },
+      "id": "embedded-null",
+      "values": {
+        "q": "a\u0000b"
+      }
+    },
+    {
+      "description": "Attempt to broaden the search with an injected true condition.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    \"\"\"The events whose title holds `q`, by the search index.\"\"\""
+      },
+      "id": "sql-always-true",
+      "values": {
+        "q": "' OR 1=1 -- "
+      }
+    },
+    {
+      "description": "Attempt to suppress matches with an injected false condition.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    \"\"\"The events whose title holds `q`, by the search index.\"\"\""
+      },
+      "id": "sql-always-false",
+      "values": {
+        "q": "' AND 1=0 -- "
+      }
+    },
+    {
+      "description": "Attempt to return titles where the handler expects integer IDs.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    \"\"\"The events whose title holds `q`, by the search index.\"\"\""
+      },
+      "id": "sql-union-text",
+      "values": {
+        "q": "' UNION SELECT title FROM events -- "
+      }
+    }
+  ],
+  "semantic_properties": null,
+  "transitions": null
+}

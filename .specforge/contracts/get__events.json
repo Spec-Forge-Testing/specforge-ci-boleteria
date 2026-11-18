@@ -1,0 +1,84 @@
+{
+  "access": {
+    "grounds": {
+      "basis": "stated",
+      "quote": "  \"security\": null,"
+    },
+    "owner_bundle": null,
+    "policy": "public",
+    "required_role": null
+  },
+  "attack": null,
+  "body": null,
+  "method": "get",
+  "parameters": {
+    "header": {},
+    "path": {},
+    "query": {
+      "category": {
+        "default": "",
+        "description": null,
+        "enum": null,
+        "examples": [
+          "",
+          "music"
+        ],
+        "format": null,
+        "grounds": null,
+        "items": null,
+        "maxItems": null,
+        "maxLength": null,
+        "maximum": null,
+        "minItems": null,
+        "minLength": null,
+        "minimum": null,
+        "pattern": null,
+        "properties": null,
+        "required": null,
+        "type": "string"
+      }
+    }
+  },
+  "path_url": "/events",
+  "required_parameters": {
+    "header": [],
+    "path": [],
+    "query": []
+  },
+  "risk": {
+    "auth_surface": false,
+    "criticality": "low",
+    "external_side_effects": false,
+    "risk_score": 15,
+    "sensitivity": "public",
+    "write_operation": false
+  },
+  "seed_cases": [
+    {
+      "description": "An empty category returns the unfiltered event list.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    return [event for event in events if not category or event[\"category\"] == category]"
+      },
+      "id": "empty-category",
+      "values": {
+        "category": ""
+      }
+    },
+    {
+      "description": "A nonempty category exercises exact-match filtering.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    return [event for event in events if not category or event[\"category\"] == category]"
+      },
+      "id": "nonempty-category",
+      "values": {
+        "category": "music"
+      }
+    }
+  ],
+  "semantic_properties": null,
+  "transitions": null
+}

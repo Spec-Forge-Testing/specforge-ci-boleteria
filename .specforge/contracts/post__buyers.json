@@ -1,0 +1,242 @@
+{
+  "access": {
+    "grounds": {
+      "basis": "stated",
+      "quote": "The document does not declare a security requirement for this endpoint."
+    },
+    "owner_bundle": null,
+    "policy": "public",
+    "required_role": null
+  },
+  "attack": null,
+  "body": {
+    "default": null,
+    "description": null,
+    "enum": null,
+    "examples": null,
+    "format": null,
+    "grounds": null,
+    "items": null,
+    "maxItems": null,
+    "maxLength": null,
+    "maximum": null,
+    "minItems": null,
+    "minLength": null,
+    "minimum": null,
+    "pattern": null,
+    "properties": {
+      "email": {
+        "default": null,
+        "description": null,
+        "enum": null,
+        "examples": [
+          "dana@example.com"
+        ],
+        "format": "email",
+        "grounds": {
+          "format": {
+            "basis": "assumed",
+            "quote": null
+          }
+        },
+        "items": null,
+        "maxItems": null,
+        "maxLength": null,
+        "maximum": null,
+        "minItems": null,
+        "minLength": null,
+        "minimum": null,
+        "pattern": null,
+        "properties": null,
+        "required": null,
+        "type": "string"
+      },
+      "name": {
+        "default": null,
+        "description": null,
+        "enum": null,
+        "examples": [
+          "Dana Ruiz"
+        ],
+        "format": null,
+        "grounds": {
+          "pattern": {
+            "basis": "stated",
+            "quote": "    if not body.name.strip():"
+          }
+        },
+        "items": null,
+        "maxItems": null,
+        "maxLength": null,
+        "maximum": null,
+        "minItems": null,
+        "minLength": null,
+        "minimum": null,
+        "pattern": "\\S",
+        "properties": null,
+        "required": null,
+        "type": "string"
+      },
+      "password": {
+        "default": null,
+        "description": null,
+        "enum": null,
+        "examples": [
+          "dana-2026"
+        ],
+        "format": null,
+        "grounds": {
+          "minLength": {
+            "basis": "stated",
+            "quote": "    if not body.password:"
+          }
+        },
+        "items": null,
+        "maxItems": null,
+        "maxLength": null,
+        "maximum": null,
+        "minItems": null,
+        "minLength": 1,
+        "minimum": null,
+        "pattern": null,
+        "properties": null,
+        "required": null,
+        "type": "string"
+      }
+    },
+    "required": null,
+    "type": "object"
+  },
+  "method": "post",
+  "parameters": {
+    "header": {},
+    "path": {},
+    "query": {}
+  },
+  "path_url": "/buyers",
+  "required_parameters": {
+    "header": [],
+    "path": [],
+    "query": []
+  },
+  "risk": {
+    "auth_surface": true,
+    "criticality": "high",
+    "external_side_effects": false,
+    "risk_score": 80,
+    "sensitivity": "auth",
+    "write_operation": true
+  },
+  "seed_cases": [
+    {
+      "description": "Reject an empty name.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "stated",
+        "quote": "        reject(\"name must not be blank\")"
+      },
+      "id": "empty-name",
+      "values": {
+        "name": ""
+      }
+    },
+    {
+      "description": "Reject a name containing only whitespace.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "stated",
+        "quote": "        reject(\"name must not be blank\")"
+      },
+      "id": "whitespace-name",
+      "values": {
+        "name": " \t\n"
+      }
+    },
+    {
+      "description": "Accept a one-character nonblank name.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    if not body.name.strip():"
+      },
+      "id": "single-character-name",
+      "values": {
+        "name": "A"
+      }
+    },
+    {
+      "description": "Accept a name with surrounding whitespace.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    if not body.name.strip():"
+      },
+      "id": "padded-name",
+      "values": {
+        "name": " A "
+      }
+    },
+    {
+      "description": "Reject an empty password.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "stated",
+        "quote": "        reject(\"password must not be empty\")"
+      },
+      "id": "empty-password",
+      "values": {
+        "password": ""
+      }
+    },
+    {
+      "description": "Accept a one-character password.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    if not body.password:"
+      },
+      "id": "one-character-password",
+      "values": {
+        "password": "a"
+      }
+    },
+    {
+      "description": "Test a nonempty whitespace-only password.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    if not body.password:"
+      },
+      "id": "whitespace-password",
+      "values": {
+        "password": " "
+      }
+    },
+    {
+      "description": "Test an email without an address shape.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "assumed",
+        "quote": null
+      },
+      "id": "invalid-email",
+      "values": {
+        "email": "not-an-email"
+      }
+    },
+    {
+      "description": "Test an empty email address.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "assumed",
+        "quote": null
+      },
+      "id": "empty-email",
+      "values": {
+        "email": ""
+      }
+    }
+  ],
+  "semantic_properties": null,
+  "transitions": null
+}

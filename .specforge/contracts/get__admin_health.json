@@ -1,0 +1,121 @@
+{
+  "access": {
+    "grounds": {
+      "basis": "stated",
+      "quote": "def admin_health(user: User = Depends(require_role(\"admin\"))) -> BoxOfficeHealth:"
+    },
+    "owner_bundle": null,
+    "policy": "role_only",
+    "required_role": "admin"
+  },
+  "attack": null,
+  "body": null,
+  "method": "get",
+  "parameters": {
+    "header": {},
+    "path": {},
+    "query": {}
+  },
+  "path_url": "/admin/health",
+  "required_parameters": {
+    "header": [],
+    "path": [],
+    "query": []
+  },
+  "risk": {
+    "auth_surface": true,
+    "criticality": "medium",
+    "external_side_effects": false,
+    "risk_score": 45,
+    "sensitivity": "internal",
+    "write_operation": false
+  },
+  "seed_cases": null,
+  "semantic_properties": [
+    {
+      "description": "A successful health response reports ok as true.",
+      "expression": {
+        "kind": "binary_op",
+        "left": {
+          "field": "ok",
+          "kind": "field_ref"
+        },
+        "operator": "==",
+        "right": {
+          "kind": "literal",
+          "value": true
+        }
+      },
+      "grounds": {
+        "basis": "stated",
+        "quote": "        ok=True,"
+      },
+      "id": "health-ok",
+      "property_class": "response_invariant"
+    },
+    {
+      "description": "The event count is nonnegative.",
+      "expression": {
+        "kind": "binary_op",
+        "left": {
+          "field": "events",
+          "kind": "field_ref"
+        },
+        "operator": ">=",
+        "right": {
+          "kind": "literal",
+          "value": 0
+        }
+      },
+      "grounds": {
+        "basis": "stated",
+        "quote": "        events=len(table(\"events\")),"
+      },
+      "id": "events-nonnegative",
+      "property_class": "response_invariant"
+    },
+    {
+      "description": "The show count is nonnegative.",
+      "expression": {
+        "kind": "binary_op",
+        "left": {
+          "field": "shows",
+          "kind": "field_ref"
+        },
+        "operator": ">=",
+        "right": {
+          "kind": "literal",
+          "value": 0
+        }
+      },
+      "grounds": {
+        "basis": "stated",
+        "quote": "        shows=len(table(\"shows\")),"
+      },
+      "id": "shows-nonnegative",
+      "property_class": "response_invariant"
+    },
+    {
+      "description": "The open order count is nonnegative.",
+      "expression": {
+        "kind": "binary_op",
+        "left": {
+          "field": "open_orders",
+          "kind": "field_ref"
+        },
+        "operator": ">=",
+        "right": {
+          "kind": "literal",
+          "value": 0
+        }
+      },
+      "grounds": {
+        "basis": "stated",
+        "quote": "        open_orders=sum(order[\"status\"] in (\"reserved\", \"paid\") for order in orders),"
+      },
+      "id": "open-orders-nonnegative",
+      "property_class": "response_invariant"
+    }
+  ],
+  "transitions": null
+}

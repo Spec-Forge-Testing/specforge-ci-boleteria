@@ -1,0 +1,53 @@
+{
+  "access": {
+    "grounds": {
+      "basis": "stated",
+      "quote": "        forbid(\"only the buyer who placed an order may change it\")"
+    },
+    "owner_bundle": "orders_id",
+    "policy": "owner_only",
+    "required_role": null
+  },
+  "attack": null,
+  "body": null,
+  "method": "delete",
+  "parameters": {
+    "header": {},
+    "path": {},
+    "query": {}
+  },
+  "path_url": "/orders/{id}",
+  "required_parameters": {
+    "header": [],
+    "path": [
+      "id"
+    ],
+    "query": []
+  },
+  "risk": {
+    "auth_surface": true,
+    "criticality": "high",
+    "external_side_effects": false,
+    "risk_score": 70,
+    "sensitivity": "internal",
+    "write_operation": true
+  },
+  "seed_cases": null,
+  "semantic_properties": null,
+  "transitions": [
+    {
+      "bundle": "orders_id",
+      "echoed_fields": [],
+      "expected_statuses": [
+        404
+      ],
+      "follow_up_method": "delete",
+      "follow_up_path": "/orders/{id}",
+      "target_field": "id",
+      "target_zone": "path",
+      "trigger_statuses": [
+        204
+      ]
+    }
+  ]
+}

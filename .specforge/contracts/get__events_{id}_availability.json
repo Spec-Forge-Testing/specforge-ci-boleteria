@@ -1,0 +1,98 @@
+{
+  "access": {
+    "grounds": {
+      "basis": "stated",
+      "quote": "  \"security\": null,"
+    },
+    "owner_bundle": null,
+    "policy": "public",
+    "required_role": null
+  },
+  "attack": null,
+  "body": null,
+  "method": "get",
+  "parameters": {
+    "header": {},
+    "path": {},
+    "query": {}
+  },
+  "path_url": "/events/{id}/availability",
+  "required_parameters": {
+    "header": [],
+    "path": [],
+    "query": []
+  },
+  "risk": {
+    "auth_surface": false,
+    "criticality": "low",
+    "external_side_effects": false,
+    "risk_score": 25,
+    "sensitivity": "public",
+    "write_operation": false
+  },
+  "seed_cases": [],
+  "semantic_properties": [
+    {
+      "description": "The number of shows is nonnegative.",
+      "expression": {
+        "kind": "binary_op",
+        "left": {
+          "field": "shows",
+          "kind": "field_ref"
+        },
+        "operator": ">=",
+        "right": {
+          "kind": "literal",
+          "value": 0
+        }
+      },
+      "grounds": {
+        "basis": "stated",
+        "quote": "    return JSONResponse({\"event_id\": event[\"id\"], \"shows\": len(shows), \"free_seats\": f\"{free}\"})"
+      },
+      "id": "shows-nonnegative",
+      "property_class": "response_invariant"
+    },
+    {
+      "description": "An event with no shows has zero free seats.",
+      "expression": {
+        "condition": {
+          "kind": "binary_op",
+          "left": {
+            "field": "shows",
+            "kind": "field_ref"
+          },
+          "operator": "==",
+          "right": {
+            "kind": "literal",
+            "value": 0
+          }
+        },
+        "if_false": {
+          "kind": "literal",
+          "value": true
+        },
+        "if_true": {
+          "kind": "binary_op",
+          "left": {
+            "field": "free_seats",
+            "kind": "field_ref"
+          },
+          "operator": "==",
+          "right": {
+            "kind": "literal",
+            "value": 0
+          }
+        },
+        "kind": "conditional"
+      },
+      "grounds": {
+        "basis": "stated",
+        "quote": "    free = sum(show[\"capacity\"] - show[\"reserved\"] for show in shows)"
+      },
+      "id": "no-shows-no-free-seats",
+      "property_class": "response_invariant"
+    }
+  ],
+  "transitions": null
+}

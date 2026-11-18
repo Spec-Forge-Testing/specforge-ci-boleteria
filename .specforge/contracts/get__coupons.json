@@ -1,0 +1,36 @@
+{
+  "access": {
+    "grounds": {
+      "basis": "stated",
+      "quote": "def list_coupons(user: User = Depends(require_role(\"organizer\"))) -> list[dict[str, Any]]:"
+    },
+    "owner_bundle": null,
+    "policy": "role_only",
+    "required_role": "organizer"
+  },
+  "attack": null,
+  "body": null,
+  "method": "get",
+  "parameters": {
+    "header": {},
+    "path": {},
+    "query": {}
+  },
+  "path_url": "/coupons",
+  "required_parameters": {
+    "header": [],
+    "path": [],
+    "query": []
+  },
+  "risk": {
+    "auth_surface": true,
+    "criticality": "medium",
+    "external_side_effects": false,
+    "risk_score": 50,
+    "sensitivity": "internal",
+    "write_operation": false
+  },
+  "seed_cases": null,
+  "semantic_properties": null,
+  "transitions": null
+}

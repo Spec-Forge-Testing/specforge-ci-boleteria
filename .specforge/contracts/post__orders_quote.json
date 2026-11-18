@@ -1,0 +1,393 @@
+{
+  "access": {
+    "grounds": {
+      "basis": "stated",
+      "quote": "  \"security\": null,"
+    },
+    "owner_bundle": null,
+    "policy": "public",
+    "required_role": null
+  },
+  "attack": null,
+  "body": {
+    "default": null,
+    "description": null,
+    "enum": null,
+    "examples": null,
+    "format": null,
+    "grounds": null,
+    "items": null,
+    "maxItems": null,
+    "maxLength": null,
+    "maximum": null,
+    "minItems": null,
+    "minLength": null,
+    "minimum": null,
+    "pattern": null,
+    "properties": {
+      "coupon_code": {
+        "default": null,
+        "description": null,
+        "enum": null,
+        "examples": [
+          "",
+          "VERANO10"
+        ],
+        "format": null,
+        "grounds": null,
+        "items": null,
+        "maxItems": null,
+        "maxLength": null,
+        "maximum": null,
+        "minItems": null,
+        "minLength": null,
+        "minimum": null,
+        "pattern": null,
+        "properties": null,
+        "required": null,
+        "type": "string"
+      },
+      "seats": {
+        "default": null,
+        "description": null,
+        "enum": null,
+        "examples": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "format": null,
+        "grounds": {
+          "maximum": {
+            "basis": "stated",
+            "quote": "    max_per_order = 8"
+          },
+          "minimum": {
+            "basis": "stated",
+            "quote": "        reject(\"an order needs at least one seat\")"
+          }
+        },
+        "items": null,
+        "maxItems": null,
+        "maxLength": null,
+        "maximum": 8,
+        "minItems": null,
+        "minLength": null,
+        "minimum": 1,
+        "pattern": null,
+        "properties": null,
+        "required": null,
+        "type": "integer"
+      }
+    },
+    "required": null,
+    "type": "object"
+  },
+  "method": "post",
+  "parameters": {
+    "header": {},
+    "path": {},
+    "query": {}
+  },
+  "path_url": "/orders/quote",
+  "required_parameters": {
+    "header": [],
+    "path": [],
+    "query": []
+  },
+  "risk": {
+    "auth_surface": false,
+    "criticality": "medium",
+    "external_side_effects": false,
+    "risk_score": 55,
+    "sensitivity": "financial",
+    "write_operation": false
+  },
+  "seed_cases": [
+    {
+      "description": "One seat below the minimum.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "stated",
+        "quote": "        reject(\"an order needs at least one seat\")"
+      },
+      "id": "zero-seats",
+      "values": {
+        "coupon_code": "",
+        "seats": 0
+      }
+    },
+    {
+      "description": "The minimum seat count without a coupon.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    if seats < 1:"
+      },
+      "id": "minimum-seats",
+      "values": {
+        "coupon_code": "",
+        "seats": 1
+      }
+    },
+    {
+      "description": "One seat above the minimum without a coupon.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    if seats < 1:"
+      },
+      "id": "above-minimum-seats",
+      "values": {
+        "coupon_code": "",
+        "seats": 2
+      }
+    },
+    {
+      "description": "One seat below the order limit without a coupon.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    if seats > max_per_order:"
+      },
+      "id": "below-order-limit",
+      "values": {
+        "coupon_code": "",
+        "seats": 7
+      }
+    },
+    {
+      "description": "The order limit without a coupon.",
+      "expects": "accepted",
+      "grounds": {
+        "basis": "stated",
+        "quote": "    if seats > max_per_order:"
+      },
+      "id": "at-order-limit",
+      "values": {
+        "coupon_code": "",
+        "seats": 8
+      }
+    },
+    {
+      "description": "One seat above the order limit.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "stated",
+        "quote": "        reject(f\"an order holds at most {max_per_order} seats\")"
+      },
+      "id": "above-order-limit",
+      "values": {
+        "coupon_code": "",
+        "seats": 9
+      }
+    },
+    {
+      "description": "The example coupon with one seat below its limit.",
+      "expects": null,
+      "grounds": null,
+      "id": "below-coupon-limit",
+      "values": {
+        "coupon_code": "VERANO10",
+        "seats": 3
+      }
+    },
+    {
+      "description": "The example coupon at its seat limit.",
+      "expects": null,
+      "grounds": null,
+      "id": "at-coupon-limit",
+      "values": {
+        "coupon_code": "VERANO10",
+        "seats": 4
+      }
+    },
+    {
+      "description": "The example coupon with one seat above its stated limit.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "stated",
+        "quote": "        reject(f\"a coupon covers at most {max_per_coupon} seats of an order\")"
+      },
+      "id": "above-coupon-limit",
+      "values": {
+        "coupon_code": "VERANO10",
+        "seats": 5
+      }
+    },
+    {
+      "description": "The example coupon at the overall order limit.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "stated",
+        "quote": "        reject(f\"a coupon covers at most {max_per_coupon} seats of an order\")"
+      },
+      "id": "coupon-at-order-limit",
+      "values": {
+        "coupon_code": "VERANO10",
+        "seats": 8
+      }
+    },
+    {
+      "description": "The example coupon above the overall order limit.",
+      "expects": "rejected",
+      "grounds": {
+        "basis": "stated",
+        "quote": "        reject(f\"an order holds at most {max_per_order} seats\")"
+      },
+      "id": "coupon-above-order-limit",
+      "values": {
+        "coupon_code": "VERANO10",
+        "seats": 9
+      }
+    }
+  ],
+  "semantic_properties": [
+    {
+      "description": "A coupon covers at most four seats in an order.",
+      "expression": {
+        "kind": "logical",
+        "operands": [
+          {
+            "kind": "binary_op",
+            "left": {
+              "field": "coupon_code",
+              "kind": "field_ref"
+            },
+            "operator": "==",
+            "right": {
+              "kind": "literal",
+              "value": ""
+            }
+          },
+          {
+            "kind": "binary_op",
+            "left": {
+              "field": "seats",
+              "kind": "field_ref"
+            },
+            "operator": "<=",
+            "right": {
+              "kind": "literal",
+              "value": 4
+            }
+          }
+        ],
+        "operator": "or"
+      },
+      "grounds": {
+        "basis": "stated",
+        "quote": "        reject(f\"a coupon covers at most {max_per_coupon} seats of an order\")"
+      },
+      "id": "coupon-seat-limit",
+      "property_class": "input_constraint"
+    },
+    {
+      "description": "The subtotal is the unit price multiplied by the number of seats.",
+      "expression": {
+        "kind": "binary_op",
+        "left": {
+          "field": "subtotal_cents",
+          "kind": "field_ref"
+        },
+        "operator": "==",
+        "right": {
+          "kind": "binary_op",
+          "left": {
+            "field": "unit_price_cents",
+            "kind": "field_ref"
+          },
+          "operator": "*",
+          "right": {
+            "field": "seats",
+            "kind": "field_ref"
+          }
+        }
+      },
+      "grounds": {
+        "basis": "stated",
+        "quote": "    subtotal = show[\"price_cents\"] * seats"
+      },
+      "id": "subtotal-is-seat-price",
+      "property_class": "response_invariant"
+    },
+    {
+      "description": "The total is the subtotal minus the discount plus the service fee.",
+      "expression": {
+        "kind": "binary_op",
+        "left": {
+          "field": "total_cents",
+          "kind": "field_ref"
+        },
+        "operator": "==",
+        "right": {
+          "kind": "binary_op",
+          "left": {
+            "kind": "binary_op",
+            "left": {
+              "field": "subtotal_cents",
+              "kind": "field_ref"
+            },
+            "operator": "-",
+            "right": {
+              "field": "discount_cents",
+              "kind": "field_ref"
+            }
+          },
+          "operator": "+",
+          "right": {
+            "field": "service_fee_cents",
+            "kind": "field_ref"
+          }
+        }
+      },
+      "grounds": {
+        "basis": "stated",
+        "quote": "    \"\"\"The total is the seats at the show's price, minus the discount, plus the service fee.\"\"\""
+      },
+      "id": "total-includes-service-fee",
+      "property_class": "response_invariant"
+    },
+    {
+      "description": "An empty coupon code produces no discount.",
+      "expression": {
+        "kind": "logical",
+        "operands": [
+          {
+            "kind": "binary_op",
+            "left": {
+              "field": "coupon_code",
+              "kind": "field_ref"
+            },
+            "operator": "!=",
+            "right": {
+              "kind": "literal",
+              "value": ""
+            }
+          },
+          {
+            "kind": "binary_op",
+            "left": {
+              "field": "discount_cents",
+              "kind": "field_ref"
+            },
+            "operator": "==",
+            "right": {
+              "kind": "literal",
+              "value": 0
+            }
+          }
+        ],
+        "operator": "or"
+      },
+      "grounds": {
+        "basis": "stated",
+        "quote": "    \"\"\"The discount of an active coupon; no code, no discount.\"\"\""
+      },
+      "id": "no-coupon-no-discount",
+      "property_class": "response_invariant"
+    }
+  ],
+  "transitions": null
+}
