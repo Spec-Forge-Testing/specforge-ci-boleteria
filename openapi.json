@@ -1,0 +1,2876 @@
+{
+ "openapi": "3.1.0",
+ "info": {
+  "title": "Boletería",
+  "description": "Tickets for live events: organizers publish shows, buyers reserve and pay.",
+  "version": "1.0"
+ },
+ "servers": [
+  {
+   "url": "http://127.0.0.1:8600"
+  }
+ ],
+ "paths": {
+  "/health": {
+   "get": {
+    "tags": [
+     "status"
+    ],
+    "summary": "Health",
+    "operationId": "health",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Health"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/auth/login": {
+   "post": {
+    "tags": [
+     "auth"
+    ],
+    "summary": "Login",
+    "operationId": "login",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/Credentials"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Session"
+        }
+       }
+      }
+     },
+     "401": {
+      "description": "Unauthorized",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/buyers": {
+   "post": {
+    "tags": [
+     "buyers"
+    ],
+    "summary": "Create Buyer",
+    "operationId": "createBuyer",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/NewBuyer"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/BuyerView"
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/buyers/me": {
+   "get": {
+    "tags": [
+     "buyers"
+    ],
+    "summary": "Read My Profile",
+    "operationId": "getMyProfile",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/BuyerView"
+        }
+       }
+      }
+     },
+     "401": {
+      "description": "Unauthorized",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/venues": {
+   "get": {
+    "tags": [
+     "venues"
+    ],
+    "summary": "List Venues",
+    "operationId": "listVenues",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/VenueView"
+         },
+         "type": "array",
+         "title": "Response Listvenues"
+        }
+       }
+      }
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "venues"
+    ],
+    "summary": "Create Venue",
+    "operationId": "createVenue",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/NewVenue"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/VenueView"
+        }
+       }
+      },
+      "links": {
+       "getVenue": {
+        "operationId": "getVenue",
+        "parameters": {
+         "id": "$response.body#/id"
+        }
+       }
+      }
+     },
+     "401": {
+      "description": "Unauthorized",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/venues/{id}": {
+   "get": {
+    "tags": [
+     "venues"
+    ],
+    "summary": "Read Venue",
+    "operationId": "getVenue",
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/VenueView"
+        }
+       }
+      }
+     },
+     "404": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Not Found"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/events": {
+   "get": {
+    "tags": [
+     "events"
+    ],
+    "summary": "List Events",
+    "operationId": "listEvents",
+    "parameters": [
+     {
+      "name": "category",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "string",
+       "default": "",
+       "title": "Category"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/EventView"
+         },
+         "title": "Response Listevents"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "events"
+    ],
+    "summary": "Create Event",
+    "operationId": "createEvent",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/NewEvent"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/EventView"
+        }
+       }
+      },
+      "links": {
+       "getEvent": {
+        "operationId": "getEvent",
+        "parameters": {
+         "id": "$response.body#/id"
+        }
+       },
+       "updateEvent": {
+        "operationId": "updateEvent",
+        "parameters": {
+         "id": "$response.body#/id"
+        }
+       },
+       "deleteEvent": {
+        "operationId": "deleteEvent",
+        "parameters": {
+         "id": "$response.body#/id"
+        }
+       }
+      }
+     },
+     "400": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Bad Request"
+     },
+     "401": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Unauthorized"
+     },
+     "403": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Forbidden"
+     },
+     "404": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Not Found"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/events/search": {
+   "get": {
+    "tags": [
+     "events"
+    ],
+    "summary": "Search Events",
+    "operationId": "searchEvents",
+    "parameters": [
+     {
+      "name": "q",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Q"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/EventView"
+         },
+         "title": "Response Searchevents"
+        }
+       }
+      }
+     },
+     "400": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Bad Request"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/events/{id}": {
+   "get": {
+    "tags": [
+     "events"
+    ],
+    "summary": "Read Event",
+    "operationId": "getEvent",
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/EventView"
+        }
+       }
+      }
+     },
+     "404": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Not Found"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "put": {
+    "tags": [
+     "events"
+    ],
+    "summary": "Update Event",
+    "operationId": "updateEvent",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/EventUpdate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/EventView"
+        }
+       }
+      }
+     },
+     "400": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Bad Request"
+     },
+     "401": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Unauthorized"
+     },
+     "403": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Forbidden"
+     },
+     "404": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Not Found"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "tags": [
+     "events"
+    ],
+    "summary": "Delete Event",
+    "operationId": "deleteEvent",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Id"
+      }
+     }
+    ],
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "401": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Unauthorized"
+     },
+     "403": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Forbidden"
+     },
+     "404": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Not Found"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/events/{id}/availability": {
+   "get": {
+    "tags": [
+     "events"
+    ],
+    "summary": "Read Availability",
+    "operationId": "getAvailability",
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Availability"
+        }
+       }
+      }
+     },
+     "404": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Not Found"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/events/{id}/shows": {
+   "get": {
+    "tags": [
+     "shows"
+    ],
+    "summary": "List Shows",
+    "operationId": "listShows",
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/ShowView"
+         },
+         "title": "Response Listshows"
+        }
+       }
+      }
+     },
+     "404": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Not Found"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "shows"
+    ],
+    "summary": "Create Show",
+    "operationId": "createShow",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/NewShow"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ShowView"
+        }
+       }
+      },
+      "links": {
+       "getShow": {
+        "operationId": "getShow",
+        "parameters": {
+         "id": "$response.body#/id"
+        }
+       },
+       "listSeats": {
+        "operationId": "listSeats",
+        "parameters": {
+         "id": "$response.body#/id"
+        }
+       }
+      }
+     },
+     "400": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Bad Request"
+     },
+     "401": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Unauthorized"
+     },
+     "403": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Forbidden"
+     },
+     "404": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Not Found"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/shows/{id}": {
+   "get": {
+    "tags": [
+     "shows"
+    ],
+    "summary": "Read Show",
+    "operationId": "getShow",
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ShowView"
+        }
+       }
+      }
+     },
+     "404": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Not Found"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/shows/{id}/seats": {
+   "get": {
+    "tags": [
+     "shows"
+    ],
+    "summary": "Read Seats",
+    "operationId": "listSeats",
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Id"
+      }
+     },
+     {
+      "name": "sector",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "enum": [
+        "general",
+        "balcony",
+        "vip"
+       ],
+       "type": "string",
+       "default": "general",
+       "title": "Sector"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/SectorSeats"
+        }
+       }
+      }
+     },
+     "404": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Not Found"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/orders/quote": {
+   "post": {
+    "tags": [
+     "orders"
+    ],
+    "summary": "Quote Order",
+    "operationId": "quoteOrder",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/NewOrder"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/QuoteView"
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      }
+     },
+     "404": {
+      "description": "Not Found",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/orders": {
+   "get": {
+    "tags": [
+     "orders"
+    ],
+    "summary": "List My Orders",
+    "description": "The caller's own orders, cancelled ones left out.",
+    "operationId": "listMyOrders",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/OrderView"
+         },
+         "type": "array",
+         "title": "Response Listmyorders"
+        }
+       }
+      }
+     },
+     "401": {
+      "description": "Unauthorized",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   },
+   "post": {
+    "tags": [
+     "orders"
+    ],
+    "summary": "Create Order",
+    "operationId": "createOrder",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/NewOrder"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/OrderView"
+        }
+       }
+      },
+      "links": {
+       "getOrder": {
+        "operationId": "getOrder",
+        "parameters": {
+         "id": "$response.body#/id"
+        }
+       },
+       "cancelOrder": {
+        "operationId": "cancelOrder",
+        "parameters": {
+         "id": "$response.body#/id"
+        }
+       },
+       "payOrder": {
+        "operationId": "payOrder",
+        "parameters": {
+         "id": "$response.body#/id"
+        }
+       },
+       "refundOrder": {
+        "operationId": "refundOrder",
+        "parameters": {
+         "id": "$response.body#/id"
+        }
+       },
+       "transferOrder": {
+        "operationId": "transferOrder",
+        "parameters": {
+         "id": "$response.body#/id"
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      }
+     },
+     "401": {
+      "description": "Unauthorized",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      }
+     },
+     "404": {
+      "description": "Not Found",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/orders/{id}": {
+   "get": {
+    "tags": [
+     "orders"
+    ],
+    "summary": "Read Order",
+    "operationId": "getOrder",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/OrderView"
+        }
+       }
+      }
+     },
+     "401": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Unauthorized"
+     },
+     "403": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Forbidden"
+     },
+     "404": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Not Found"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "tags": [
+     "orders"
+    ],
+    "summary": "Cancel Order",
+    "operationId": "cancelOrder",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Id"
+      }
+     }
+    ],
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "401": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Unauthorized"
+     },
+     "403": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Forbidden"
+     },
+     "404": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Not Found"
+     },
+     "409": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Conflict"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/orders/{id}/pay": {
+   "post": {
+    "tags": [
+     "orders"
+    ],
+    "summary": "Pay Order",
+    "operationId": "payOrder",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/Payment"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/OrderView"
+        }
+       }
+      }
+     },
+     "401": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Unauthorized"
+     },
+     "403": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Forbidden"
+     },
+     "404": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Not Found"
+     },
+     "409": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Conflict"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/orders/{id}/refund": {
+   "post": {
+    "tags": [
+     "orders"
+    ],
+    "summary": "Refund Order",
+    "operationId": "refundOrder",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/Refund"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/OrderView"
+        }
+       }
+      }
+     },
+     "400": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Bad Request"
+     },
+     "401": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Unauthorized"
+     },
+     "403": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Forbidden"
+     },
+     "404": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Not Found"
+     },
+     "409": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Conflict"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/orders/{id}/transfer": {
+   "post": {
+    "tags": [
+     "orders"
+    ],
+    "summary": "Transfer Order",
+    "operationId": "transferOrder",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/Transfer"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/OrderView"
+        }
+       }
+      }
+     },
+     "400": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Bad Request"
+     },
+     "401": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Unauthorized"
+     },
+     "403": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Forbidden"
+     },
+     "404": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Not Found"
+     },
+     "409": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      },
+      "description": "Conflict"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/coupons": {
+   "get": {
+    "tags": [
+     "coupons"
+    ],
+    "summary": "List Coupons",
+    "operationId": "listCoupons",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/CouponView"
+         },
+         "type": "array",
+         "title": "Response Listcoupons"
+        }
+       }
+      }
+     },
+     "401": {
+      "description": "Unauthorized",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      }
+     },
+     "403": {
+      "description": "Forbidden",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   },
+   "post": {
+    "tags": [
+     "coupons"
+    ],
+    "summary": "Create Coupon",
+    "operationId": "createCoupon",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/NewCoupon"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/CouponView"
+        }
+       }
+      }
+     },
+     "400": {
+      "description": "Bad Request",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      }
+     },
+     "401": {
+      "description": "Unauthorized",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      }
+     },
+     "403": {
+      "description": "Forbidden",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      }
+     },
+     "409": {
+      "description": "Conflict",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/coupons/redeem": {
+   "post": {
+    "tags": [
+     "coupons"
+    ],
+    "summary": "Redeem Coupon",
+    "operationId": "redeemCoupon",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/Redemption"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Redeemed"
+        }
+       }
+      }
+     },
+     "401": {
+      "description": "Unauthorized",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      }
+     },
+     "404": {
+      "description": "Not Found",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/admin/payouts": {
+   "get": {
+    "tags": [
+     "admin"
+    ],
+    "summary": "List Payouts",
+    "operationId": "listPayouts",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/Payout"
+         },
+         "type": "array",
+         "title": "Response Listpayouts"
+        }
+       }
+      }
+     },
+     "401": {
+      "description": "Unauthorized",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      }
+     },
+     "403": {
+      "description": "Forbidden",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/admin/health": {
+   "get": {
+    "tags": [
+     "admin"
+    ],
+    "summary": "Admin Health",
+    "operationId": "adminHealth",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/BoxOfficeHealth"
+        }
+       }
+      }
+     },
+     "401": {
+      "description": "Unauthorized",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      }
+     },
+     "403": {
+      "description": "Forbidden",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Problem"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  }
+ },
+ "components": {
+  "schemas": {
+   "Availability": {
+    "properties": {
+     "event_id": {
+      "type": "integer",
+      "title": "Event Id"
+     },
+     "shows": {
+      "type": "integer",
+      "title": "Shows"
+     },
+     "free_seats": {
+      "type": "integer",
+      "title": "Free Seats"
+     }
+    },
+    "type": "object",
+    "required": [
+     "event_id",
+     "shows",
+     "free_seats"
+    ],
+    "title": "Availability"
+   },
+   "BoxOfficeHealth": {
+    "properties": {
+     "ok": {
+      "type": "boolean",
+      "title": "Ok"
+     },
+     "events": {
+      "type": "integer",
+      "title": "Events"
+     },
+     "shows": {
+      "type": "integer",
+      "title": "Shows"
+     },
+     "open_orders": {
+      "type": "integer",
+      "title": "Open Orders"
+     }
+    },
+    "type": "object",
+    "required": [
+     "ok",
+     "events",
+     "shows",
+     "open_orders"
+    ],
+    "title": "BoxOfficeHealth"
+   },
+   "BuyerView": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "email": {
+      "type": "string",
+      "title": "Email"
+     },
+     "role": {
+      "type": "string",
+      "title": "Role"
+     },
+     "is_admin": {
+      "type": "boolean",
+      "title": "Is Admin"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "name",
+     "email",
+     "role",
+     "is_admin"
+    ],
+    "title": "BuyerView"
+   },
+   "CouponView": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "code": {
+      "type": "string",
+      "title": "Code"
+     },
+     "percent_off": {
+      "type": "integer",
+      "title": "Percent Off"
+     },
+     "active": {
+      "type": "boolean",
+      "title": "Active"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "code",
+     "percent_off",
+     "active"
+    ],
+    "title": "CouponView"
+   },
+   "Credentials": {
+    "properties": {
+     "email": {
+      "type": "string",
+      "title": "Email"
+     },
+     "password": {
+      "type": "string",
+      "title": "Password"
+     }
+    },
+    "type": "object",
+    "required": [
+     "email",
+     "password"
+    ],
+    "title": "Credentials",
+    "examples": [
+     {
+      "email": "ana@example.com",
+      "password": "ana-2026"
+     }
+    ]
+   },
+   "EventUpdate": {
+    "properties": {
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "description": {
+      "type": "string",
+      "title": "Description"
+     }
+    },
+    "type": "object",
+    "required": [
+     "title",
+     "description"
+    ],
+    "title": "EventUpdate",
+    "examples": [
+     {
+      "description": "The closing night, with every band on stage.",
+      "title": "Festival Río Sonoro: noche de cierre"
+     }
+    ]
+   },
+   "EventView": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "headline": {
+      "type": "string",
+      "title": "Headline"
+     },
+     "description": {
+      "type": "string",
+      "title": "Description"
+     },
+     "category": {
+      "type": "string",
+      "title": "Category"
+     },
+     "venue_id": {
+      "type": "integer",
+      "title": "Venue Id"
+     },
+     "capacity": {
+      "type": "integer",
+      "title": "Capacity"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "title",
+     "headline",
+     "description",
+     "category",
+     "venue_id",
+     "capacity"
+    ],
+    "title": "EventView"
+   },
+   "HTTPValidationError": {
+    "properties": {
+     "detail": {
+      "items": {
+       "$ref": "#/components/schemas/ValidationError"
+      },
+      "type": "array",
+      "title": "Detail"
+     }
+    },
+    "type": "object",
+    "title": "HTTPValidationError"
+   },
+   "Health": {
+    "properties": {
+     "ok": {
+      "type": "boolean",
+      "title": "Ok"
+     }
+    },
+    "type": "object",
+    "required": [
+     "ok"
+    ],
+    "title": "Health"
+   },
+   "NewBuyer": {
+    "properties": {
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "email": {
+      "type": "string",
+      "title": "Email"
+     },
+     "password": {
+      "type": "string",
+      "title": "Password"
+     }
+    },
+    "type": "object",
+    "required": [
+     "name",
+     "email",
+     "password"
+    ],
+    "title": "NewBuyer",
+    "examples": [
+     {
+      "email": "dana@example.com",
+      "name": "Dana Ruiz",
+      "password": "dana-2026"
+     }
+    ]
+   },
+   "NewCoupon": {
+    "properties": {
+     "code": {
+      "type": "string",
+      "title": "Code"
+     },
+     "percent_off": {
+      "type": "integer",
+      "title": "Percent Off"
+     }
+    },
+    "type": "object",
+    "required": [
+     "code",
+     "percent_off"
+    ],
+    "title": "NewCoupon",
+    "examples": [
+     {
+      "code": "PRIMAVERA15",
+      "percent_off": 15
+     }
+    ]
+   },
+   "NewEvent": {
+    "properties": {
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "description": {
+      "type": "string",
+      "title": "Description",
+      "default": ""
+     },
+     "category": {
+      "type": "string",
+      "enum": [
+       "music",
+       "theatre",
+       "comedy",
+       "sports"
+      ],
+      "title": "Category"
+     },
+     "venue_id": {
+      "type": "integer",
+      "title": "Venue Id"
+     },
+     "capacity": {
+      "type": "integer",
+      "title": "Capacity"
+     }
+    },
+    "type": "object",
+    "required": [
+     "title",
+     "category",
+     "venue_id",
+     "capacity"
+    ],
+    "title": "NewEvent",
+    "examples": [
+     {
+      "capacity": 800,
+      "category": "music",
+      "description": "A milonga night with a live orchestra.",
+      "title": "Tango en el Club",
+      "venue_id": 1
+     }
+    ]
+   },
+   "NewOrder": {
+    "properties": {
+     "show_id": {
+      "type": "integer",
+      "title": "Show Id"
+     },
+     "seats": {
+      "type": "integer",
+      "title": "Seats"
+     },
+     "coupon_code": {
+      "type": "string",
+      "title": "Coupon Code",
+      "default": ""
+     }
+    },
+    "type": "object",
+    "required": [
+     "show_id",
+     "seats"
+    ],
+    "title": "NewOrder",
+    "examples": [
+     {
+      "coupon_code": "",
+      "seats": 2,
+      "show_id": 3
+     },
+     {
+      "coupon_code": "VERANO10",
+      "seats": 4,
+      "show_id": 1
+     },
+     {
+      "coupon_code": "",
+      "seats": 4,
+      "show_id": 6
+     }
+    ]
+   },
+   "NewShow": {
+    "properties": {
+     "starts_at": {
+      "type": "integer",
+      "title": "Starts At"
+     },
+     "ends_at": {
+      "type": "integer",
+      "title": "Ends At"
+     },
+     "price_cents": {
+      "type": "integer",
+      "title": "Price Cents"
+     }
+    },
+    "type": "object",
+    "required": [
+     "starts_at",
+     "ends_at",
+     "price_cents"
+    ],
+    "title": "NewShow",
+    "examples": [
+     {
+      "ends_at": 1797129000,
+      "price_cents": 3500000,
+      "starts_at": 1797120000
+     }
+    ]
+   },
+   "NewVenue": {
+    "properties": {
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "city": {
+      "type": "string",
+      "title": "City"
+     },
+     "capacity": {
+      "type": "integer",
+      "maximum": 100000.0,
+      "minimum": 1.0,
+      "title": "Capacity"
+     }
+    },
+    "type": "object",
+    "required": [
+     "name",
+     "city",
+     "capacity"
+    ],
+    "title": "NewVenue",
+    "examples": [
+     {
+      "capacity": 900,
+      "city": "Buenos Aires",
+      "name": "Club Niceto"
+     }
+    ]
+   },
+   "OrderView": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "buyer_id": {
+      "type": "integer",
+      "title": "Buyer Id"
+     },
+     "show_id": {
+      "type": "integer",
+      "title": "Show Id"
+     },
+     "seats": {
+      "type": "integer",
+      "title": "Seats"
+     },
+     "coupon_code": {
+      "type": "string",
+      "title": "Coupon Code"
+     },
+     "total_cents": {
+      "type": "integer",
+      "title": "Total Cents"
+     },
+     "paid_cents": {
+      "type": "integer",
+      "title": "Paid Cents"
+     },
+     "refunded_cents": {
+      "type": "integer",
+      "title": "Refunded Cents"
+     },
+     "status": {
+      "type": "string",
+      "enum": [
+       "reserved",
+       "paid",
+       "refunded",
+       "cancelled"
+      ],
+      "title": "Status"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "buyer_id",
+     "show_id",
+     "seats",
+     "coupon_code",
+     "total_cents",
+     "paid_cents",
+     "refunded_cents",
+     "status"
+    ],
+    "title": "OrderView"
+   },
+   "Payment": {
+    "properties": {
+     "method": {
+      "type": "string",
+      "enum": [
+       "card",
+       "bank_transfer"
+      ],
+      "title": "Method"
+     }
+    },
+    "type": "object",
+    "required": [
+     "method"
+    ],
+    "title": "Payment"
+   },
+   "Payout": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "organizer": {
+      "type": "string",
+      "title": "Organizer"
+     },
+     "event_id": {
+      "type": "integer",
+      "title": "Event Id"
+     },
+     "amount_cents": {
+      "type": "integer",
+      "title": "Amount Cents"
+     },
+     "bank_account": {
+      "type": "string",
+      "title": "Bank Account"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "organizer",
+     "event_id",
+     "amount_cents",
+     "bank_account",
+     "status"
+    ],
+    "title": "Payout"
+   },
+   "Problem": {
+    "properties": {
+     "detail": {
+      "type": "string",
+      "title": "Detail"
+     }
+    },
+    "type": "object",
+    "required": [
+     "detail"
+    ],
+    "title": "Problem"
+   },
+   "QuoteView": {
+    "properties": {
+     "show_id": {
+      "type": "integer",
+      "title": "Show Id"
+     },
+     "seats": {
+      "type": "integer",
+      "title": "Seats"
+     },
+     "coupon_code": {
+      "type": "string",
+      "title": "Coupon Code"
+     },
+     "unit_price_cents": {
+      "type": "integer",
+      "title": "Unit Price Cents"
+     },
+     "subtotal_cents": {
+      "type": "integer",
+      "title": "Subtotal Cents"
+     },
+     "discount_cents": {
+      "type": "integer",
+      "title": "Discount Cents"
+     },
+     "service_fee_cents": {
+      "type": "integer",
+      "title": "Service Fee Cents"
+     },
+     "total_cents": {
+      "type": "integer",
+      "title": "Total Cents"
+     }
+    },
+    "type": "object",
+    "required": [
+     "show_id",
+     "seats",
+     "coupon_code",
+     "unit_price_cents",
+     "subtotal_cents",
+     "discount_cents",
+     "service_fee_cents",
+     "total_cents"
+    ],
+    "title": "QuoteView"
+   },
+   "Redeemed": {
+    "properties": {
+     "code": {
+      "type": "string",
+      "title": "Code"
+     },
+     "percent_off": {
+      "type": "integer",
+      "title": "Percent Off"
+     }
+    },
+    "type": "object",
+    "required": [
+     "code",
+     "percent_off"
+    ],
+    "title": "Redeemed"
+   },
+   "Redemption": {
+    "properties": {
+     "code": {
+      "type": "string",
+      "title": "Code"
+     }
+    },
+    "type": "object",
+    "required": [
+     "code"
+    ],
+    "title": "Redemption",
+    "examples": [
+     {
+      "code": "VERANO10"
+     }
+    ]
+   },
+   "Refund": {
+    "properties": {
+     "amount_cents": {
+      "type": "integer",
+      "title": "Amount Cents"
+     }
+    },
+    "type": "object",
+    "required": [
+     "amount_cents"
+    ],
+    "title": "Refund",
+    "examples": [
+     {
+      "amount_cents": 1000000
+     }
+    ]
+   },
+   "SectorSeats": {
+    "properties": {
+     "show_id": {
+      "type": "integer",
+      "title": "Show Id"
+     },
+     "sector": {
+      "type": "string",
+      "title": "Sector"
+     },
+     "free_seats": {
+      "type": "integer",
+      "title": "Free Seats"
+     },
+     "price_cents": {
+      "type": "integer",
+      "title": "Price Cents"
+     }
+    },
+    "type": "object",
+    "required": [
+     "show_id",
+     "sector",
+     "free_seats",
+     "price_cents"
+    ],
+    "title": "SectorSeats"
+   },
+   "Session": {
+    "properties": {
+     "token": {
+      "type": "string",
+      "title": "Token"
+     }
+    },
+    "type": "object",
+    "required": [
+     "token"
+    ],
+    "title": "Session"
+   },
+   "ShowView": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "event_id": {
+      "type": "integer",
+      "title": "Event Id"
+     },
+     "starts_at": {
+      "type": "integer",
+      "title": "Starts At"
+     },
+     "ends_at": {
+      "type": "integer",
+      "title": "Ends At"
+     },
+     "price_cents": {
+      "type": "integer",
+      "title": "Price Cents"
+     },
+     "capacity": {
+      "type": "integer",
+      "title": "Capacity"
+     },
+     "free_seats": {
+      "type": "integer",
+      "title": "Free Seats"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "event_id",
+     "starts_at",
+     "ends_at",
+     "price_cents",
+     "capacity",
+     "free_seats"
+    ],
+    "title": "ShowView"
+   },
+   "Transfer": {
+    "properties": {
+     "to_buyer_id": {
+      "type": "integer",
+      "title": "To Buyer Id"
+     }
+    },
+    "type": "object",
+    "required": [
+     "to_buyer_id"
+    ],
+    "title": "Transfer",
+    "examples": [
+     {
+      "to_buyer_id": 5
+     }
+    ]
+   },
+   "ValidationError": {
+    "properties": {
+     "loc": {
+      "items": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "integer"
+        }
+       ]
+      },
+      "type": "array",
+      "title": "Location"
+     },
+     "msg": {
+      "type": "string",
+      "title": "Message"
+     },
+     "type": {
+      "type": "string",
+      "title": "Error Type"
+     }
+    },
+    "type": "object",
+    "required": [
+     "loc",
+     "msg",
+     "type"
+    ],
+    "title": "ValidationError"
+   },
+   "VenueView": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "city": {
+      "type": "string",
+      "title": "City"
+     },
+     "capacity": {
+      "type": "integer",
+      "title": "Capacity"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "name",
+     "city",
+     "capacity"
+    ],
+    "title": "VenueView"
+   }
+  },
+  "securitySchemes": {
+   "HTTPBearer": {
+    "type": "http",
+    "scheme": "bearer"
+   }
+  }
+ }
+}
