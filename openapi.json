@@ -460,6 +460,77 @@
     }
    }
   },
+  "/events/catalog": {
+   "get": {
+    "tags": [
+     "events"
+    ],
+    "summary": "Browse Catalog",
+    "description": "The catalog the home page browses, a page at a time, newest events first.",
+    "operationId": "browseCatalog",
+    "parameters": [
+     {
+      "name": "category",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "string",
+       "default": "",
+       "title": "Category"
+      }
+     },
+     {
+      "name": "page",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 1,
+       "description": "The page to show, from 1.",
+       "default": 1,
+       "title": "Page"
+      },
+      "description": "The page to show, from 1."
+     },
+     {
+      "name": "per_page",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "maximum": 50,
+       "minimum": 1,
+       "description": "How many events a page holds.",
+       "default": 10,
+       "title": "Per Page"
+      },
+      "description": "How many events a page holds."
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/CatalogPage"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
   "/events/search": {
    "get": {
     "tags": [
@@ -2123,6 +2194,42 @@
      "is_admin"
     ],
     "title": "BuyerView"
+   },
+   "CatalogPage": {
+    "properties": {
+     "items": {
+      "items": {
+       "$ref": "#/components/schemas/EventView"
+      },
+      "type": "array",
+      "title": "Items"
+     },
+     "page": {
+      "type": "integer",
+      "title": "Page"
+     },
+     "per_page": {
+      "type": "integer",
+      "title": "Per Page"
+     },
+     "total": {
+      "type": "integer",
+      "title": "Total"
+     },
+     "pages": {
+      "type": "integer",
+      "title": "Pages"
+     }
+    },
+    "type": "object",
+    "required": [
+     "items",
+     "page",
+     "per_page",
+     "total",
+     "pages"
+    ],
+    "title": "CatalogPage"
    },
    "CouponView": {
     "properties": {
