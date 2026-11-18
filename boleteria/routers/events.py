@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
+import math
 import sqlite3
 from typing import Any, Literal
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
@@ -57,6 +58,14 @@ class EventView(BaseModel):
     capacity: int
 
 
+class CatalogPage(BaseModel):
+    items: list[EventView]
+    page: int
+    per_page: int
+    total: int
+    pages: int
+
+
 class Availability(BaseModel):
     event_id: int
     shows: int
@@ -90,6 +99,26 @@ def matching_event_ids(q: str) -> list[Any]:
 def list_events(category: str = "") -> list[dict[str, Any]]:
     events = list(table("events").values())
     return [event for event in events if not category or event["category"] == category]
+
+
+@router.get("/events/catalog", operation_id="browseCatalog", response_model=CatalogPage)
+def browse_catalog(
+    category: str = "",
+    page: int = Query(1, ge=1, description="The page to show, from 1."),
+    per_page: int = Query(10, ge=1, le=50, description="How many events a page holds."),
+) -> dict[str, Any]:
+    """The catalog the home page browses, a page at a time, newest events first."""
+    events = [event for event in list_events(category)]
+    events.sort(key=lambda event: event["id"], reverse=True)
+    pages = math.ceil(len(events) / per_page)
+    start = (page - 1) * per_page
+    return {
+        "items": events[start : start + per_page],
+        "page": page,
+        "per_page": per_page,
+        "total": len(events),
+        "pages": pages,
+    }
 
 
 @router.get(
